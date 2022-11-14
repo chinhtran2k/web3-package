@@ -1,0 +1,32 @@
+{
+  "name": "@hpa3-blockchain/data-integrity",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node ./dist/test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.12.0"
+  },
+  "dependencies": {
+    "@walletconnect/web3-provider": "^1.8.0",
+    "abi-decoder": "^2.4.0",
+    "abi-parser-pack": "^1.0.0",
+    "js-to-ts-converter": "^0.18.2",
+    "keccak256": "^1.0.6",
+    "web3": "^1.8.0"
+  },
+  "publishConfig": {
+    "@hpa3-blockchain:registry": " https://git.vmo.dev/api/v4/projects/1233/packages/npm/"
+  }
+}
