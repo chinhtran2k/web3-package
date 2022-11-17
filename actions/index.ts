@@ -40,9 +40,9 @@ class Integrity {
   }
 
   public async createAuthentication(
-    claimHoder: string,
+    identity: string,
   ){
-    var abicreateAuthentication = this.Authenticator.methods.createAuthentication(claimHoder).call();
+    var abicreateAuthentication = this.Authenticator.methods.createAuthentication(identity).call();
     return abicreateAuthentication;
   }
 
