@@ -1,0 +1,21 @@
+{
+  "name": "hpa3-data-intergrity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "hardhat": "^2.12.2"
+  },
+  "dependencies": {
+    "abi-parser-pack": "^1.0.0",
+    "web3": "^1.8.1",
+    "web3-core": "^1.8.1"
+  }
+}
