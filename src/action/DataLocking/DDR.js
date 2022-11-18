@@ -44,45 +44,50 @@ var DDR = /** @class */ (function () {
     function DDR(connection) {
         this.connection = connection;
         this.ddr = new this.connection.web3.eth.Contract(config_1.CONFIG.DDR.abi, config_1.CONFIG.DDR.address);
+        this.authenticator = new connection.web3.eth.Contract(config_1.CONFIG.Authenticator.abi, config_1.CONFIG.Authenticator.address);
         this.claimHolder = new this.connection.web3.eth.Contract(config_1.CONFIG.ClaimHolder.abi);
     }
+    DDR.prototype.createAuthentication = function (identity) {
+        return __awaiter(this, void 0, void 0, function () {
+            var abicreateAuthentication;
+            return __generator(this, function (_a) {
+                abicreateAuthentication = this.authenticator.methods.createAuthentication(identity).call();
+                return [2 /*return*/, abicreateAuthentication];
+            });
+        });
+    };
     DDR.prototype.mintDDR = function (hashedData, ddrRawId, ddrPatientRawId, uri, patientDID, privateKey) {
         return __awaiter(this, void 0, void 0, function () {
-            var account, nonce, mintAbi, executeAbi, tx, decodedLogs, eventLogs, receipt, _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var account, nonce, mintAbi, executeAbi, tx, decodedLogs, eventLogs;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         account = this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
                         return [4 /*yield*/, this.connection.web3.eth.getTransactionCount(account.address)];
                     case 1:
-                        nonce = _c.sent();
+                        nonce = _a.sent();
                         return [4 /*yield*/, this.ddr.methods
                                 .mint(hashedData, ddrRawId, ddrPatientRawId, uri, patientDID)
                                 .encodeABI()];
                     case 2:
-                        mintAbi = _c.sent();
+                        mintAbi = _a.sent();
                         executeAbi = this.claimHolder.methods
                             .execute(config_1.CONFIG.DDR.address, 0, mintAbi)
                             .encodeABI();
                         return [4 /*yield*/, (0, utils_1.signAndSendTransaction)(this.connection, executeAbi, config_1.CONFIG.ClaimHolder.address, privateKey)];
                     case 3:
-                        tx = _c.sent();
+                        tx = _a.sent();
                         return [4 /*yield*/, decodeLogs(tx.logs, config_1.CONFIG.ClaimHolder.abi)];
                     case 4:
-                        decodedLogs = _c.sent();
+                        decodedLogs = _a.sent();
                         return [4 /*yield*/, decodedLogs.filter(
                             // (log: any) => log.name === "MintedDDR",
                             // (log: any) => log.name === "ApprovalShareDDR",
                             // (log: any) => log.name === "DDRTokenLocked"
                             function (log) { return log.name === "ExecutionRequested"; })];
                     case 5:
-                        eventLogs = _c.sent();
-                        receipt = this.connection.getTransactionReceipt(tx.blockHash);
-                        _b = (_a = console).log;
-                        return [4 /*yield*/, receipt];
-                    case 6:
-                        _b.apply(_a, [(_c.sent()).logs]);
-                        return [2 /*return*/];
+                        eventLogs = _a.sent();
+                        return [2 /*return*/, { tx: tx, eventLogs: eventLogs }];
                 }
             });
         });

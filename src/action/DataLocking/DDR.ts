@@ -9,6 +9,7 @@ export class DDR {
   private connection: Connection;
   private ddr: Contract;
   private claimHolder: Contract;
+  private authenticator: any;
 
   constructor(connection: Connection) {
     this.connection = connection;
@@ -16,7 +17,18 @@ export class DDR {
       CONFIG.DDR.abi,
       CONFIG.DDR.address
     );
+    this.authenticator = new connection.web3.eth.Contract(
+      CONFIG.Authenticator.abi,
+      CONFIG.Authenticator.address
+    );
     this.claimHolder = new this.connection.web3.eth.Contract(CONFIG.ClaimHolder.abi);
+  }
+
+  public async createAuthentication(
+    identity: string,
+  ){
+    var abicreateAuthentication = this.authenticator.methods.createAuthentication(identity).call();
+    return abicreateAuthentication;
   }
 
   public async mintDDR(
