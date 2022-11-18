@@ -1,8 +1,9 @@
 import { TransactionReceipt, TransactionConfig } from "web3-core/types";
 import { Connection } from "./connection";
+import InputDataDecoder, { InputData } from "./etherHelper";
 
 export interface signTransactionOutput {
-  // eventContract: InputData;
+  eventContract: InputData;
   transactionObject: TransactionReceipt;
 }
 
@@ -20,9 +21,8 @@ const signAndSendTransaction = async (
   data: any,
   to: string,
   privateKey: string,
-  nonce?: number,
-  isEstimate: boolean = false
-): Promise<TransactionReceipt | number> => {
+  nonce?: number
+): Promise<TransactionReceipt> => {
   const web3 = connection.web3;
   const address = web3.eth.accounts.privateKeyToAccount(privateKey);
   let gas = await web3.eth.estimateGas({
@@ -45,9 +45,9 @@ const signAndSendTransaction = async (
     transactionObject["nonce"] = nonce;
   }
 
-  if (isEstimate) {
-    return await connection.web3.eth.estimateGas(transactionObject);
-  }
+//   if (isEstimate) {
+//     return await connection.web3.eth.estimateGas(transactionObject);
+//   }
 
   return new Promise((resolve, reject) => {
     web3.eth.accounts.signTransaction(

@@ -8,7 +8,7 @@ interface ICONFIG {
   AuthenticatorHelper: AuthenticatorHelper;
   DDR: DDR;
   Patient: Patient;
-  Pharmacy: Pharmacy;
+  POCStudy: POCStudy;
 }
 
 interface ClaimHolder {
@@ -60,14 +60,14 @@ interface Patient {
   contractName: string;
 }
 
-interface Pharmacy {
+interface POCStudy {
   address: string;
   abi: AbiItem[];
   bytecode: string;
   contractName: string;
 }
 
-import * as jsonConfig from "./config.json";
+// import * as jsonConfig from "./config.json";
 
 const CONFIG: ICONFIG = require("./config.json");
 export { CONFIG };
