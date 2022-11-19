@@ -67,7 +67,9 @@ interface POCStudy {
   contractName: string;
 }
 
-// import * as jsonConfig from "./config.json";
+// Please do not remove this line
+// this import help typescript to keep json
+import * as jsonConfig from "./config.json";
 
 const CONFIG: ICONFIG = require("./config.json");
 export { CONFIG };

@@ -21,13 +21,15 @@ export class DDR {
       CONFIG.Authenticator.abi,
       CONFIG.Authenticator.address
     );
-    this.claimHolder = new this.connection.web3.eth.Contract(CONFIG.ClaimHolder.abi);
+    this.claimHolder = new this.connection.web3.eth.Contract(
+      CONFIG.ClaimHolder.abi
+    );
   }
 
-  public async createAuthentication(
-    identity: string,
-  ){
-    var abicreateAuthentication = this.authenticator.methods.createAuthentication(identity).call();
+  public async createAuthentication(identity: string) {
+    var abicreateAuthentication = this.authenticator.methods
+      .createAuthentication(identity)
+      .call();
     return abicreateAuthentication;
   }
 
@@ -45,27 +47,36 @@ export class DDR {
       account.address
     );
     var mintAbi = await this.ddr.methods
-      .mint(hashedData, ddrRawId,ddrPatientRawId, uri, patientDID)
+      .mint(hashedData, ddrRawId, ddrPatientRawId, uri, patientDID)
       .encodeABI();
 
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
       .encodeABI();
 
+    console.log("claim holder", CONFIG.ClaimHolder.address);
+
     const tx = await signAndSendTransaction(
       this.connection,
       executeAbi,
       CONFIG.ClaimHolder.address,
       privateKey,
+      nonce
     );
-    const decodedLogs = await decodeLogs(tx.logs, CONFIG.ClaimHolder.abi);
-    const eventLogs = await decodedLogs.filter(
-      // (log: any) => log.name === "MintedDDR",
-      // (log: any) => log.name === "ApprovalShareDDR",
-      // (log: any) => log.name === "DDRTokenLocked"
-      (log: any) => log.name === "ExecutionRequested"
+
+    // Decode log for different contract
+    const decodedLogsCL = await decodeLogs(
+      tx.logs,
+      CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
     );
-    return { tx, eventLogs};
+    let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
+    // const decodedLogsDDR = await decodeLogs(tx.logs, CONFIG.DDR.abi);
+    // eventLogs = await eventLogs.concat(
+    //   await decodedLogsDDR.filter((log: any) => log)
+    // );
+
+    return { tx, eventLogs };
   }
   public async mintBatchDDR(
     hashValues: any[],
@@ -73,20 +84,24 @@ export class DDR {
     uris: string[],
     patientDID: string,
     privateKey: string
-  ){
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
       account.address
     );
-    var abiMintBatch = this.ddr.methods.mintBatch(hashValues, ddrRawIds, uris, patientDID).encodeABI();
-    var abiMintBatchExecute = this.claimHolder.methods.execute(CONFIG.ClaimHolder.address,0,abiMintBatch).encodeABI();
+    var abiMintBatch = this.ddr.methods
+      .mintBatch(hashValues, ddrRawIds, uris, patientDID)
+      .encodeABI();
+    var abiMintBatchExecute = this.claimHolder.methods
+      .execute(CONFIG.ClaimHolder.address, 0, abiMintBatch)
+      .encodeABI();
     const receipt = await signAndSendTransaction(
       this.connection,
       abiMintBatchExecute,
       CONFIG.ClaimHolder.address,
       privateKey,
-      nonce,
+      nonce
     );
     return receipt;
   }
@@ -95,23 +110,25 @@ export class DDR {
     ddrTokenId: number,
     patientDID: string,
     privateKey: string
-  ){
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
       account.address
     );
-    var abiMintBatch = this.ddr.methods.shareDDR(ddrTokenId, patientDID).encodeABI();
+    var abiMintBatch = this.ddr.methods
+      .shareDDR(ddrTokenId, patientDID)
+      .encodeABI();
     const receipt = await signAndSendTransaction(
       this.connection,
       abiMintBatch,
       CONFIG.DDR.address,
       privateKey,
-      nonce,
+      nonce
     );
     const decodedLogs = await decodeLogs(receipt.logs, CONFIG.DDR.abi);
     const eventLogs = await decodedLogs.filter(
-      (log: any) => log.name === "ApprovalShareDDR",
+      (log: any) => log.name === "ApprovalShareDDR"
     );
     return { receipt, eventLogs };
   }
@@ -120,23 +137,25 @@ export class DDR {
     ddrTokenIds: number[],
     hospitalDID: string,
     privateKey: string
-  ){
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
       account.address
     );
-    var abiLockDDR= this.ddr.methods.disclosureConsentDDRFromHospital(ddrTokenIds, hospitalDID).encodeABI();
+    var abiLockDDR = this.ddr.methods
+      .disclosureConsentDDRFromHospital(ddrTokenIds, hospitalDID)
+      .encodeABI();
     const receipt = await signAndSendTransaction(
       this.connection,
       abiLockDDR,
       CONFIG.DDR.address,
       privateKey,
-      nonce,
+      nonce
     );
     const decodedLogs = await decodeLogs(receipt.logs, CONFIG.DDR.abi);
     const eventLogs = await decodedLogs.filter(
-      (log: any) => log.name === "ApprovalDisclosureConsentDDR",
+      (log: any) => log.name === "ApprovalDisclosureConsentDDR"
     );
     return { receipt, eventLogs };
   }

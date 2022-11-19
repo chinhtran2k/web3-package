@@ -45,10 +45,6 @@ const signAndSendTransaction = async (
     transactionObject["nonce"] = nonce;
   }
 
-//   if (isEstimate) {
-//     return await connection.web3.eth.estimateGas(transactionObject);
-//   }
-
   return new Promise((resolve, reject) => {
     web3.eth.accounts.signTransaction(
       transactionObject,
