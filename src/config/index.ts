@@ -8,6 +8,7 @@ interface ICONFIG {
     Pharmacy: Pharmacy;
     POCStudy: POCStudy;
     ClaimHolder: ClaimHolder;
+    ERC20Proxy: ERC20Proxy;
 }
 interface Authenticator {
   address: string;
@@ -51,7 +52,7 @@ interface POCStudy {
   contractName: string;
 }
 
-interface POCStudy {
+interface ERC20Proxy {
   address: string;
   abi: AbiItem[];
   bytecode: string;
