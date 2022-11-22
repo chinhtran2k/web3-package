@@ -76,7 +76,7 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.DDR.abi);
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }
