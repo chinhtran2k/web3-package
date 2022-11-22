@@ -31,17 +31,22 @@ export class Patient {
       account.address
     );
     var mintAbi = this.patient.methods.mint(patientDID, uri).encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       mintAbi,
       CONFIG.Patient.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.Patient.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Patient.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    let tokenId = eventLogs[0].events.tokenId;
-    return { tx, eventLogs, tokenId };
+    const eventMintDDR = await decodedLogsCL.filter(
+      (log: any) => log.name === "PatientLockTokenMinted"
+    );
+
+    let tokenId = eventMintDDR[0].events.tokenId;
+
+    return { receipt, eventLogs, tokenId };
   }
 
   public async getPatientRootHashValue(patientDID: string) {

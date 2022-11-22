@@ -23,16 +23,21 @@ export class POCStudy {
       account.address
     );
     var mintAbi = this.pcoStudy.methods.mint(uri, message).encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       mintAbi,
       CONFIG.POCStudy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.POCStudy.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.POCStudy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    const eventMintDDR = await decodedLogsCL.filter(
+      (log: any) => log.name === "LockedPOCPatient"
+    );
+
+    let tokenId = eventMintDDR[0].events.tokenId;
+    return { receipt, eventLogs, tokenId };
   }
 
   public async getRootHashPOCPatient() {

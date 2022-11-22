@@ -56,7 +56,7 @@ export class DDR {
 
     console.log("claim holder", CONFIG.ClaimHolder.address);
 
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
       CONFIG.ClaimHolder.address,
@@ -66,13 +66,17 @@ export class DDR {
 
     // Decode log for different contract
     const decodedLogsCL = await decodeLogs(
-      tx.logs,
+      receipt.logs,
       CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    let tokenId = eventLogs[3].events.tokenId;
+    const eventMintDDR = await decodedLogsCL.filter(
+      (log: any) => log.name === "MintedDDR"
+    );
+
+    let tokenId = eventMintDDR[0].events.tokenId;
     let ddrs = [ tokenId, ddrRawId ]
-    return { tx, eventLogs, ddrs};
+    return { receipt, eventLogs, ddrs};
   }
   public async mintBatchDDR(
     hashValues: any[],
@@ -91,16 +95,41 @@ export class DDR {
       .mintBatch(hashValues, ddrRawIds, ddrPatientRawIds, uris, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
-      .execute(CONFIG.ClaimHolder.address, 0, mintBatchAbi)
+      .execute(CONFIG.DDR.address, 0, mintBatchAbi)
       .encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
       CONFIG.ClaimHolder.address,
       privateKey,
       nonce
     );
-    return tx;
+    return receipt;
+  }
+
+  public async setERC20Proxy(
+    addressErc20Proxy: string,
+    privateKey: string
+  ){
+    const account =
+      this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
+    var nonce = await this.connection.web3.eth.getTransactionCount(
+      account.address
+    );
+    var mintBatchAbi = this.ddr.methods
+      .setERC20Proxy(addressErc20Proxy)
+      .encodeABI();
+    var executeAbi = this.claimHolder.methods
+      .execute(CONFIG.DDR.address, 0, mintBatchAbi)
+      .encodeABI();
+    const receipt = await signAndSendTransaction(
+      this.connection,
+      executeAbi,
+      CONFIG.ClaimHolder.address,
+      privateKey,
+      nonce
+    );
+    return receipt;
   }
 
   public async sharedDDR(
@@ -117,9 +146,9 @@ export class DDR {
       .shareDDR(ddrTokenId, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
-      .execute(CONFIG.ClaimHolder.address, 0, sharedDDRAbi)
+      .execute(CONFIG.DDR.address, 0, sharedDDRAbi)
       .encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
       CONFIG.ClaimHolder.address,
@@ -127,11 +156,11 @@ export class DDR {
       nonce
     );
     const decodedLogsCL = await decodeLogs(
-      tx.logs,
+      receipt.logs,
       CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    return { receipt, eventLogs };
   }
 
   public async disclosureConsentDDRFromProvider(
@@ -148,9 +177,9 @@ export class DDR {
       .disclosureConsentDDRFromProvider(ddrTokenIds, providerDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
-      .execute(CONFIG.ClaimHolder.address, 0, lockDDRAbi)
+      .execute(CONFIG.DDR.address, 0, lockDDRAbi)
       .encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
       CONFIG.ClaimHolder.address,
@@ -158,10 +187,10 @@ export class DDR {
       nonce
     );
     const decodedLogsCL = await decodeLogs(
-      tx.logs,
+      receipt.logs,
       CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    return { receipt, eventLogs };
   }
 }

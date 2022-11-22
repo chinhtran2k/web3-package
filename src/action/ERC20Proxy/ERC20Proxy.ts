@@ -27,16 +27,16 @@ export class ERC20Proxy {
       account.address
     );
     var abiMint = this.erc20Proxy.methods.setAwardValue(value).encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       abiMint,
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    return { receipt, eventLogs };
   }
 
   public async setTokenOwner(tokenOwner: string, privateKey: string) {
@@ -48,16 +48,16 @@ export class ERC20Proxy {
     var abiSetTOkenOwner = this.erc20Proxy.methods
       .setTokenOwner(tokenOwner)
       .encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       abiSetTOkenOwner,
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    return { receipt, eventLogs };
   }
 
   public async setPCOToken(pcoAddress: string, privateKey: string) {
@@ -69,16 +69,16 @@ export class ERC20Proxy {
     var abiSetPCOToken = this.erc20Proxy.methods
       .setPCOToken(pcoAddress)
       .encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       abiSetPCOToken,
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    return { receipt, eventLogs };
   }
 
   public async setDDRContract(ddrAddress: string, privateKey: string) {
@@ -90,16 +90,16 @@ export class ERC20Proxy {
     var abiSetDDRContract = this.erc20Proxy.methods
       .setDDRContract(ddrAddress)
       .encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       abiSetDDRContract,
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    return { receipt, eventLogs };
   }
 
   public async awardToken(to: string, privateKey: string) {
@@ -109,15 +109,15 @@ export class ERC20Proxy {
       account.address
     );
     var abiAwardToken = this.erc20Proxy.methods.awardToken(to).encodeABI();
-    const tx = await signAndSendTransaction(
+    const receipt = await signAndSendTransaction(
       this.connection,
       abiAwardToken,
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    return { receipt, eventLogs };
   }
 }
