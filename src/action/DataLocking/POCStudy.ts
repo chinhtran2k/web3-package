@@ -13,16 +13,16 @@ export class POCStudy {
     this.connection = connection;
     this.pcoStudy = new this.connection.web3.eth.Contract(
       CONFIG.POCStudy.abi,
-      CONFIG.Patient.address
+      CONFIG.POCStudy.address
     );
   }
-  public async mintPOCStudy(uri: string, level: number, privateKey: string) {
+  public async mintPOCStudy(uri: string, message: string, privateKey: string) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
       account.address
     );
-    var mintAbi = this.pcoStudy.methods.mint(uri, level).encodeABI();
+    var mintAbi = this.pcoStudy.methods.mint(uri, message).encodeABI();
     const tx = await signAndSendTransaction(
       this.connection,
       mintAbi,
@@ -30,11 +30,8 @@ export class POCStudy {
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.POCStudy.abi
-      );
-      let eventLogs = await decodedLogsCL.filter((log: any) => log);
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.POCStudy.abi);
+    let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }
 

@@ -38,12 +38,10 @@ export class Patient {
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.Patient.abi
-      );
-      let eventLogs = await decodedLogsCL.filter((log: any) => log);
-    return { tx, eventLogs };
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.Patient.abi);
+    let eventLogs = await decodedLogsCL.filter((log: any) => log);
+    let tokenId = eventLogs[0].events.tokenId;
+    return { tx, eventLogs, tokenId };
   }
 
   public async getPatientRootHashValue(patientDID: string) {

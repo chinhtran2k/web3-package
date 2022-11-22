@@ -65,7 +65,7 @@ interface ClaimHolder {
   bytecode: string;
   contractName: string;
 }
-// import * as jsonConfig from "./config.json";
+import * as jsonConfig from "./config.json";
 
 const CONFIG: ICONFIG = require("./config.json");
 export { CONFIG };

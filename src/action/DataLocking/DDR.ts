@@ -70,10 +70,9 @@ export class DDR {
       CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
-
-    // let ddrs = [ddrRawId]
-
-    return { tx, eventLogs };
+    let tokenId = eventLogs[3].events.tokenId;
+    let ddrs = [ tokenId, ddrRawId ]
+    return { tx, eventLogs, ddrs};
   }
   public async mintBatchDDR(
     hashValues: any[],
@@ -89,7 +88,7 @@ export class DDR {
       account.address
     );
     var mintBatchAbi = this.ddr.methods
-      .mintBatch(hashValues, ddrRawIds,ddrPatientRawIds, uris, patientDID)
+      .mintBatch(hashValues, ddrRawIds, ddrPatientRawIds, uris, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.ClaimHolder.address, 0, mintBatchAbi)
@@ -118,8 +117,8 @@ export class DDR {
       .shareDDR(ddrTokenId, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
-    .execute(CONFIG.ClaimHolder.address, 0, sharedDDRAbi)
-    .encodeABI();
+      .execute(CONFIG.ClaimHolder.address, 0, sharedDDRAbi)
+      .encodeABI();
     const tx = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -128,9 +127,9 @@ export class DDR {
       nonce
     );
     const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
-      );
+      tx.logs,
+      CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
+    );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }
@@ -149,8 +148,8 @@ export class DDR {
       .disclosureConsentDDRFromHospital(ddrTokenIds, hospitalDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
-    .execute(CONFIG.ClaimHolder.address, 0, lockDDRAbi)
-    .encodeABI();
+      .execute(CONFIG.ClaimHolder.address, 0, lockDDRAbi)
+      .encodeABI();
     const tx = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -159,9 +158,9 @@ export class DDR {
       nonce
     );
     const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
-      );
+      tx.logs,
+      CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
+    );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }

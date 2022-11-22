@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",
+      "declaration": true,
+      "removeComments": false,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "allowSyntheticDefaultImports": true,
+      "allowJs": true,
+      "esModuleInterop": true,
+      "target": "es2017",
+      "sourceMap": true,
+      "outDir": "./dist",
+      "baseUrl": "./",
+      "incremental": true,
+      "skipLibCheck": true,
+      "noImplicitAny": true,
+      "resolveJsonModule": true,
+      "moduleResolution": "node"
+    },
+    "exclude": ["node_modules", "dist", "src/**/*.spec.ts"]
+  }
+  

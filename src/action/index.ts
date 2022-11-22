@@ -1,2 +1,2 @@
 export * from "./DataLocking";
-// export * from "./Authenticator";
+export * from "./ERC20Proxy";
