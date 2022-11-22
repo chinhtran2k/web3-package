@@ -26,13 +26,6 @@ export class DDR {
     );
   }
 
-  public async createAuthentication(identity: string) {
-    var abicreateAuthentication = this.authenticator.methods
-      .createAuthentication(identity)
-      .call();
-    return abicreateAuthentication;
-  }
-
   public async mintDDR(
     hashedData: string,
     ddrRawId: string,
@@ -75,9 +68,16 @@ export class DDR {
     );
 
     let tokenId = eventMintDDR[0].events.tokenId;
-    let ddrs = [ tokenId, ddrRawId ]
-    return { receipt, eventLogs, ddrs};
+    let hashValue = eventMintDDR[0].events.hashValue;
+    let ddrs = Array<any>();
+    ddrs.push({
+      tokenId: tokenId,
+      ddrRawId: ddrRawId,
+      hashValue: hashValue,
+    });
+    return { receipt, eventLogs, ddrs };
   }
+
   public async mintBatchDDR(
     hashValues: any[],
     ddrRawIds: string[],
@@ -107,10 +107,7 @@ export class DDR {
     return receipt;
   }
 
-  public async setERC20Proxy(
-    addressErc20Proxy: string,
-    privateKey: string
-  ){
+  public async setERC20Proxy(addressErc20Proxy: string, privateKey: string) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
