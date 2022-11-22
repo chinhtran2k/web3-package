@@ -58,7 +58,7 @@ class Connection {
       .on("connected", function (subscriptionId) {
         // console.log(subscriptionId);
       })
-    //   .on("data", onData)
+      .on("data", onData)
       .on("error", console.error);
     return subscription;
   }

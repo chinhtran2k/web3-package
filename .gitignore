@@ -1,6 +1,5 @@
 node_modules
 .env
-*.js
 coverage
 coverage.json
 typechain
@@ -12,3 +11,5 @@ artifacts
 test*
 dist
 test.ts
+**/test.ts
+src/test.ts
