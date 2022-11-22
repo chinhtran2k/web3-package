@@ -16,9 +16,9 @@ export class ERC20Proxy {
       CONFIG.ERC20Proxy.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
-        CONFIG.ClaimHolder.abi,
-        CONFIG.ClaimHolder.address
-    )
+      CONFIG.ClaimHolder.abi,
+      CONFIG.ClaimHolder.address
+    );
   }
   public async setAwardValue(value: number, privateKey: string) {
     const account =
@@ -34,15 +34,12 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.ERC20Proxy.abi
-      );
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }
 
-  public async setTokenOwner(tokenOwner: number, privateKey: string) {
+  public async setTokenOwner(tokenOwner: string, privateKey: string) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
@@ -58,15 +55,12 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.ERC20Proxy.abi
-      );
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }
 
-  public async setPCOToken(pcoAddress: number, privateKey: string) {
+  public async setPCOToken(pcoAddress: string, privateKey: string) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
@@ -78,19 +72,16 @@ export class ERC20Proxy {
     const tx = await signAndSendTransaction(
       this.connection,
       abiSetPCOToken,
-      CONFIG.ClaimHolder.address,
+      CONFIG.ERC20Proxy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.DDR.abi
-      );
-      let eventLogs = await decodedLogsCL.filter((log: any) => log);
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.DDR.abi);
+    let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }
 
-  public async setDDRContract(ddrAddress: number, privateKey: string) {
+  public async setDDRContract(ddrAddress: string, privateKey: string) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
@@ -102,19 +93,16 @@ export class ERC20Proxy {
     const tx = await signAndSendTransaction(
       this.connection,
       abiSetDDRContract,
-      CONFIG.ClaimHolder.address,
+      CONFIG.ERC20Proxy.address,
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.ERC20Proxy.abi
-      );
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }
 
-  public async awardToken(to: number, privateKey: string) {
+  public async awardToken(to: string, privateKey: string) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     var nonce = await this.connection.web3.eth.getTransactionCount(
@@ -128,10 +116,7 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
-    const decodedLogsCL = await decodeLogs(
-        tx.logs,
-        CONFIG.ERC20Proxy.abi
-      );
+    const decodedLogsCL = await decodeLogs(tx.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { tx, eventLogs };
   }

@@ -134,9 +134,9 @@ export class DDR {
     return { tx, eventLogs };
   }
 
-  public async disclosureConsentDDRFromHospital(
+  public async disclosureConsentDDRFromProvider(
     ddrTokenIds: number[],
-    hospitalDID: string,
+    providerDID: string,
     privateKey: string
   ) {
     const account =
@@ -145,7 +145,7 @@ export class DDR {
       account.address
     );
     var lockDDRAbi = this.ddr.methods
-      .disclosureConsentDDRFromHospital(ddrTokenIds, hospitalDID)
+      .disclosureConsentDDRFromProvider(ddrTokenIds, providerDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.ClaimHolder.address, 0, lockDDRAbi)
