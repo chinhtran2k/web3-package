@@ -1,8 +1,10 @@
 import { CONFIG } from "../../config";
 import { Connection } from "../../utils";
 import { Contract } from "web3-eth-contract/types";
+import { keccak256 } from "@ethersproject/keccak256";
+import assert, { AssertionError } from "assert";
 import { ClaimTypes } from "../../types/AuthType";
-import { BinarySearchTreeNode } from "src/utils/linkedList";
+import { BinarySearchTreeNode } from "../../utils/linkedList";
 import { signAndSendTransaction } from "../../utils";
 const { decodeLogs } = require("abi-parser-pack");
 
@@ -40,8 +42,25 @@ export class DataIntegrity {
     );
   }
 
-  private queueNode: Array<string>;
-  private tempNode: Array<string>;
+  private copyArrayToArrayUINT256 = async (
+    arrayFrom: Array<number>,
+    arrayTo: Array<number>
+  ) => {
+    for (let i = 0; i < arrayFrom.length; i++) {
+      arrayTo[i] = arrayFrom[i];
+    }
+    arrayTo[arrayFrom.length] = 0;
+
+    return arrayTo;
+  };
+
+  private popQueue(queueNode: Array<string>, index: number) {
+    for (let i = index; i < queueNode.length - 1; i++) {
+      queueNode[i] = queueNode[i + 1];
+    }
+    queueNode.pop();
+    return queueNode;
+  }
 
   public checkIntegritySingleDDR = async (
     ddrId: string,
@@ -55,30 +74,22 @@ export class DataIntegrity {
     }
   };
 
-  public copyArrayToArrayUINT256 = async (
-    arrayFrom: Array<number>,
-    arrayTo: Array<number>
+  public checkIntegritySinglePatient = async (
+    patientDID: string,
+    ddrsHashedData: Array<string>
   ) => {
-    for (let i = 0; i < arrayFrom.length; i++) {
-      arrayTo[i] = arrayFrom[i];
-    }
-    return arrayTo;
-  };
+    let queueNode: Array<any> = [];
+    let tempNode: Array<any> = [];
 
-  private popQueue(index: number) {
-    // uint256 valueAtIndex = nodeArr[index]
-    for (let i = index; i < this.queueNode.length - 1; i++) {
-      this.queueNode[i] = this.queueNode[i + 1];
-    }
-
-    this.queueNode.pop();
-  }
-
-  public checkIntegritySinglePatient = async (patientDID: string) => {
     let listDDROfPatient: Array<number> = await this.ddr.methods
       .getListDDRHashValueOfPatient(patientDID)
       .call();
     let listDDRLength = listDDROfPatient.length;
+
+    assert(
+      listDDRLength == ddrsHashedData.length,
+      "Hashed data length does not match!"
+    );
 
     if (listDDRLength === 0) {
       return false;
@@ -94,31 +105,69 @@ export class DataIntegrity {
       listDDROfPatient = templistDDROfPatient;
     }
 
-    while (this.queueNode.length != 0) {
-      this.queueNode.pop();
-    }
-    while (this.tempNode.length != 0) {
-      this.tempNode.pop();
+    if (listDDROfPatient.length - ddrsHashedData.length == 1) {
+      ddrsHashedData[ddrsHashedData.length] =
+        "0x0000000000000000000000000000000000000000000000000000000000000000";
     }
 
-    // Initial bottom level data
+    // Init bottom level
     for (let i = 0; i < listDDRLength; i++) {
-      // Bottom level doesn't have child
       let merkleNodeTemp = new BinarySearchTreeNode(
-        this.ddr.methods.getDDRHash(listDDROfPatient[i]),
+        ddrsHashedData[i],
         null,
         null
       );
 
-      // Generate unique node id base on hashValue
-      let nodeId = this.connection.web3.utils.encodePacked(
-        { value: merkleNodeTemp.data, type: "bytes32" },
-        { value: merkleNodeTemp.leftNode, type: "bytes32" },
-        { value: merkleNodeTemp.rightNode, type: "bytes32" }
-      );
-      this.queueNode.push(nodeId);
-      _allNodes[nodeId] = merkleNodeTemp;
-      this.merkleLength += 1;
+      queueNode.push(merkleNodeTemp);
     }
+
+    // Build merkle tree
+    while (queueNode.length > 1) {
+      while (tempNode.length != 0) {
+        tempNode.pop();
+      }
+
+      // handle even number of nodes
+      if (queueNode.length % 2 == 1) {
+        queueNode.push(
+          new BinarySearchTreeNode(
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            null,
+            null
+          )
+        );
+      }
+
+      // build tree
+      while (queueNode.length > 0) {
+        let upperNode = new BinarySearchTreeNode(
+          await keccak256(
+            this.connection.web3.utils.encodePacked(
+              { value: queueNode[0].data, type: "bytes32" },
+              { value: queueNode[1].data, type: "bytes32" }
+            )
+          ),
+          queueNode[0],
+          queueNode[1]
+        );
+
+        tempNode.push(upperNode);
+
+        // remove node queue
+        queueNode = this.popQueue(queueNode, 0);
+        queueNode = this.popQueue(queueNode, 0);
+      }
+
+      queueNode = Array.from(tempNode);
+    }
+
+    // Check root
+    const rootHashOnChain = await this.patient.methods
+      .getPatientRootHashValue(patientDID)
+      .call();
+
+    const rootHashOffChain = queueNode[0].data;
+
+    return rootHashOnChain === rootHashOffChain;
   };
 }
