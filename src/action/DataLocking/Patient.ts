@@ -44,7 +44,7 @@ export class Patient {
       (log: any) => log.name === "PatientLockTokenMinted"
     );
 
-    let tokenId = eventMintDDR[0].events.tokenId;
+    let tokenId = eventMintDDR[0].events.patientTokenId;
 
     return { receipt, eventLogs, tokenId };
   }

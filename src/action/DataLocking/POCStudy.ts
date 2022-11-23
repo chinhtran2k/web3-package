@@ -36,7 +36,7 @@ export class POCStudy {
       (log: any) => log.name === "LockedPOCPatient"
     );
 
-    let tokenId = eventMintDDR[0].events.tokenId;
+    let tokenId = eventMintDDR[0].events.pocTokenId;
     return { receipt, eventLogs, tokenId };
   }
 

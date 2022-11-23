@@ -116,9 +116,9 @@ export class DataIntegrity {
         { value: merkleNodeTemp.leftNode, type: "bytes32" },
         { value: merkleNodeTemp.rightNode, type: "bytes32" }
       );
-      queueNode.push(nodeId);
+      this.queueNode.push(nodeId);
       _allNodes[nodeId] = merkleNodeTemp;
-      merkleLength += 1;
+      this.merkleLength += 1;
     }
   };
 }
