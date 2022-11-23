@@ -117,15 +117,15 @@ export class DDR {
     let ddrRawId = ddrRawIds;
     let hashValue = eventMintDDR[0].events.hashValues;
     let ddrs = Array<any>();
-    for(let i=0; i< tokenId.length; i++){
+    for (let i = 0; i < tokenId.length; i++) {
       ddrs.push({
         tokenId: tokenId[i],
         ddrRawId: ddrRawId[i],
         hashValue: hashValue[i],
       });
     }
-    
-    return {receipt, eventLogs, ddrs};
+
+    return { receipt, eventLogs, ddrs };
   }
 
   public async setERC20Proxy(addressErc20Proxy: string, privateKey: string) {
@@ -167,25 +167,25 @@ export class DDR {
       .execute(CONFIG.DDR.address, 0, sharedDDRAbi)
       .encodeABI();
     const receipt = await signAndSendTransaction(
-        this.connection,
-        executeAbi,
-        CONFIG.ClaimHolder.address,
-        privateKey,
-        nonce
-      );
-  
-      // Decode log for different contract
-      const decodedLogsCL = await decodeLogs(
-        receipt.logs,
-        CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
-      );
+      this.connection,
+      executeAbi,
+      CONFIG.ClaimHolder.address,
+      privateKey,
+      nonce
+    );
+
+    // Decode log for different contract
+    const decodedLogsCL = await decodeLogs(
+      receipt.logs,
+      CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
+    );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     return { receipt, eventLogs };
   }
 
   public async disclosureConsentDDRFromProvider(
     ddrTokenIds: number[],
-    patient: string,
+    patientDID: string,
     providerDID: string,
     privateKey: string
   ) {
@@ -203,7 +203,7 @@ export class DDR {
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
-      patient,
+      patientDID,
       privateKey,
       nonce
     );
@@ -215,26 +215,22 @@ export class DDR {
     return { receipt, eventLogs };
   }
 
-  public async getShareDDR(
-    patientDID: string,
-    ddrTokenId: number
-    ){
-      var isSharedDDR = this.ddr.methods.isSharedDDR(patientDID, ddrTokenId).call();
-      return isSharedDDR;
+  public async getShareDDR(patientDID: string, ddrTokenId: number) {
+    var isSharedDDR = this.ddr.methods
+      .isSharedDDR(patientDID, ddrTokenId)
+      .call();
+    return isSharedDDR;
   }
 
-  public async getConsentedDDR(
-    providerDID: string,
-    ddrTokenId: number
-    ){
-      var isConsentedDDR = this.ddr.methods.isConsentedDDR(providerDID, ddrTokenId).call();
-      return isConsentedDDR;
+  public async getConsentedDDR(providerDID: string, ddrTokenId: number) {
+    var isConsentedDDR = this.ddr.methods
+      .isConsentedDDR(providerDID, ddrTokenId)
+      .call();
+    return isConsentedDDR;
   }
 
-  public async getLockedDDR(
-    ddrTokenId: number
-    ){
-      var isLockedDDR = this.ddr.methods.isLockedDDR(ddrTokenId).call();
-      return isLockedDDR;
+  public async getLockedDDR(ddrTokenId: number) {
+    var isLockedDDR = this.ddr.methods.isLockedDDR(ddrTokenId).call();
+    return isLockedDDR;
   }
 }
