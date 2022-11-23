@@ -1,6 +1,6 @@
 {
   "ClaimHolder": {
-    "address": "0x531C38d9eEd02e518abf14a4725fddDbB8Fc7b81",
+    "address": "0x489bE9f9d4946879815162c845eE7B7D5044e72c",
     "abi": [
       { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
       {
@@ -601,7 +601,7 @@
     "contractName": "ClaimHolder"
   },
   "ClaimVerifier": {
-    "address": "0x8972285F90E65ec0e27361042b03C12a4dfdAED8",
+    "address": "0x5eAE345534576B21df3eD828A325956C9Bac0237",
     "abi": [
       {
         "inputs": [
@@ -1375,7 +1375,7 @@
     "contractName": "Identity"
   },
   "Authenticator": {
-    "address": "0xE500188820A0cd47348122615BbD55e81D6B0191",
+    "address": "0x5e4ac90fD2588CE674c140a3E75abce25729b52d",
     "abi": [
       {
         "inputs": [
@@ -1426,7 +1426,7 @@
     "contractName": "Authenticator"
   },
   "AuthenticatorHelper": {
-    "address": "0x6347841614D2f60c27672e0c22825aB768De8638",
+    "address": "0x9153052f64C8D92cE65AaB7AAc53eF972885BC25",
     "abi": [
       {
         "inputs": [
@@ -1457,7 +1457,7 @@
     "contractName": "AuthenticatorHelper"
   },
   "DDR": {
-    "address": "0xef482305CF850E31e3AAd94fDDaA25d54dc48df7",
+    "address": "0x0d65B7D08a960C08e3Cbd435Fd5755EAD0CCF5a7",
     "abi": [
       {
         "inputs": [
@@ -2161,7 +2161,7 @@
     "contractName": "DDR"
   },
   "Patient": {
-    "address": "0x5F0d6d1c7974dD463369f04035f251B466D1ED66",
+    "address": "0xE2f004786Ca4Ba7f05830278AE6e6dfD278697bD",
     "abi": [
       {
         "inputs": [
@@ -2671,7 +2671,7 @@
     "contractName": "Patient"
   },
   "POCStudy": {
-    "address": "0x1A986988b07B15c0a3948288776B3020911d5c12",
+    "address": "0xcC263B67350336a05df530CfB173A8f5782B7B48",
     "abi": [
       {
         "inputs": [
@@ -3165,7 +3165,7 @@
     "contractName": "POCStudy"
   },
   "ERC20Proxy": {
-    "address": "0xe3d4F72D697cBD38d55D7AA51445CF7D5348cd6F",
+    "address": "0x479241EEb16c4f55671f7D5cf920Fda86fc86B0D",
     "abi": [
       {
         "inputs": [

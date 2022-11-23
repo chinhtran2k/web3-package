@@ -73,10 +73,23 @@ export class DataIntegrity {
 
   public checkIntegritySinglePatient = async (
     patientDID: string,
+    ddrsRawId: Array<string>,
     ddrsHashedData: Array<string>
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
+
+    let ddrHashValue: Array<string> = [];
+    assert(ddrsRawId.length === ddrsHashedData.length, "Length not match");
+
+    for (let i = 0; i < ddrsRawId.length; i++) {
+      ddrHashValue.push(
+        this.connection.web3.utils.encodePacked(
+          { value: ddrsRawId[i], type: "string" },
+          { value: ddrsHashedData[i], type: "bytes32" }
+        )
+      );
+    }
 
     let listDDROfPatient: Array<number> = await this.ddr.methods
       .getListDDRHashValueOfPatient(patientDID)
