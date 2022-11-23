@@ -2,11 +2,8 @@ import { CONFIG } from "../../config";
 import { Connection } from "../../utils";
 import { Contract } from "web3-eth-contract/types";
 import { keccak256 } from "@ethersproject/keccak256";
-import assert, { AssertionError } from "assert";
-import { ClaimTypes } from "../../types/AuthType";
+import assert from "assert";
 import { BinarySearchTreeNode } from "../../utils/linkedList";
-import { signAndSendTransaction } from "../../utils";
-const { decodeLogs } = require("abi-parser-pack");
 
 export class DataIntegrity {
   private connection: Connection;

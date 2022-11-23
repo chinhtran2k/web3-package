@@ -1,14 +1,14 @@
 import { AbiItem, AbiInput } from "web3-utils/types";
 
 interface ICONFIG {
-    Authenticator: Authenticator;
-    AuthenticatorHelper: AuthenticatorHelper;
-    DDR: DDR;
-    Patient: Patient;
-    Pharmacy: Pharmacy;
-    POCStudy: POCStudy;
-    ClaimHolder: ClaimHolder;
-    ERC20Proxy: ERC20Proxy;
+  Authenticator: Authenticator;
+  AuthenticatorHelper: AuthenticatorHelper;
+  DDR: DDR;
+  Patient: Patient;
+  Pharmacy: Pharmacy;
+  POCStudy: POCStudy;
+  ClaimHolder: ClaimHolder;
+  ERC20Proxy: ERC20Proxy;
 }
 interface Authenticator {
   address: string;

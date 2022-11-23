@@ -1,7 +1,6 @@
 import { CONFIG } from "../../config";
 import { Connection } from "../../utils";
 import { Contract } from "web3-eth-contract/types";
-import { ClaimTypes } from "../../types/AuthType";
 import { signAndSendTransaction } from "../../utils";
 const { decodeLogs } = require("abi-parser-pack");
 
