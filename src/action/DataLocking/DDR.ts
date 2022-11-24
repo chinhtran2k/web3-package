@@ -32,16 +32,16 @@ export class DDR {
     uri: string,
     patientDID: string,
     privateKey: string,
-    // nonce?: number
+    nonce?: number
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     // add nonce if not exist
-    // if (!nonce) {
-    //   var nonce = await this.connection.web3.eth.getTransactionCount(
-    //     account.address
-    //   );
-    // }
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
     var nonce = await this.connection.web3.eth.getTransactionCount(
       account.address
     );
