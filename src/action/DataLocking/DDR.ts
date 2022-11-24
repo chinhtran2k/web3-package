@@ -52,7 +52,7 @@ export class DDR {
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
       .encodeABI();
-    console.log("claim holder", CONFIG.ClaimHolder.address);
+
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -163,7 +163,7 @@ export class DDR {
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
-      CONFIG.ClaimHolder.address,
+      CONFIG.DDR.address,
       privateKey,
       nonce
     );
