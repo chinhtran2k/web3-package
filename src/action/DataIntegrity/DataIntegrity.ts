@@ -2,8 +2,9 @@ import { CONFIG } from "../../config";
 import { Connection } from "../../utils";
 import { Contract } from "web3-eth-contract/types";
 import { keccak256 } from "@ethersproject/keccak256";
-import assert from "assert";
+// import assert from "assert";
 import { BinarySearchTreeNode } from "../../utils/linkedList";
+const assert = require('assert');
 
 export class DataIntegrity {
   private connection: Connection;

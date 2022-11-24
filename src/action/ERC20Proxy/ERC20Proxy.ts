@@ -19,13 +19,21 @@ export class ERC20Proxy {
       CONFIG.ClaimHolder.address
     );
   }
-  public async setAwardValue(value: number, privateKey: string) {
+  public async setAwardValue(
+    value: number,
+    privateKey: string,
+    nonce?: number
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var abiMint = this.erc20Proxy.methods.setAwardValue(value).encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       abiMint,
@@ -33,20 +41,31 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
     return { receipt, eventLogs };
   }
 
-  public async setTokenOwner(tokenOwner: string, privateKey: string) {
+  public async setTokenOwner(
+    tokenOwner: string,
+    privateKey: string,
+    nonce?: number
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var abiSetTOkenOwner = this.erc20Proxy.methods
       .setTokenOwner(tokenOwner)
       .encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       abiSetTOkenOwner,
@@ -54,20 +73,30 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
     return { receipt, eventLogs };
   }
 
-  public async setPCOToken(pcoAddress: string, privateKey: string) {
+  public async setPCOToken(
+    pcoAddress: string,
+    privateKey: string,
+    nonce?: number
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var abiSetPCOToken = this.erc20Proxy.methods
       .setPCOToken(pcoAddress)
       .encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       abiSetPCOToken,
@@ -75,20 +104,30 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
     return { receipt, eventLogs };
   }
 
-  public async setDDRContract(ddrAddress: string, privateKey: string) {
+  public async setDDRContract(
+    ddrAddress: string,
+    privateKey: string,
+    nonce?: number
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var abiSetDDRContract = this.erc20Proxy.methods
       .setDDRContract(ddrAddress)
       .encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       abiSetDDRContract,
@@ -96,18 +135,24 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
     return { receipt, eventLogs };
   }
 
-  public async awardToken(to: string, privateKey: string) {
+  public async awardToken(to: string, privateKey: string, nonce?: number) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var abiAwardToken = this.erc20Proxy.methods.awardToken(to).encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       abiAwardToken,
@@ -115,8 +160,10 @@ export class ERC20Proxy {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
     return { receipt, eventLogs };
   }
 }
