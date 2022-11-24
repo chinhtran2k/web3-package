@@ -32,28 +32,27 @@ export class DDR {
     uri: string,
     patientDID: string,
     privateKey: string,
-    nonce?: number
+    // nonce?: number
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-
     // add nonce if not exist
-    if (!nonce) {
-      var nonce = await this.connection.web3.eth.getTransactionCount(
-        account.address
-      );
-    }
-    
+    // if (!nonce) {
+    //   var nonce = await this.connection.web3.eth.getTransactionCount(
+    //     account.address
+    //   );
+    // }
+    var nonce = await this.connection.web3.eth.getTransactionCount(
+      account.address
+    );
+
     var mintAbi = await this.ddr.methods
       .mint(hashedData, ddrRawId, ddrPatientRawId, uri, patientDID)
       .encodeABI();
-
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
       .encodeABI();
-
     console.log("claim holder", CONFIG.ClaimHolder.address);
-
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -89,19 +88,25 @@ export class DDR {
     ddrPatientRawIds: string[],
     uris: string[],
     patientDID: string,
-    privateKey: string
+    privateKey: string,
+    nonce?: number
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    // add nonce if not exist
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var mintBatchAbi = this.ddr.methods
       .mintBatch(hashValues, ddrRawIds, ddrPatientRawIds, uris, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
       .encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -109,6 +114,7 @@ export class DDR {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(
       receipt.logs,
       CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
@@ -133,18 +139,27 @@ export class DDR {
     return { receipt, eventLogs, ddrs };
   }
 
-  public async setERC20Proxy(addressErc20Proxy: string, privateKey: string) {
+  public async setERC20Proxy(
+    addressErc20Proxy: string,
+    privateKey: string,
+    nonce?: number
+  ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    // add nonce if not exist
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var mintBatchAbi = this.ddr.methods
       .setERC20Proxy(addressErc20Proxy)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
       .encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -152,25 +167,32 @@ export class DDR {
       privateKey,
       nonce
     );
+
     return receipt;
   }
 
   public async sharedDDR(
     ddrTokenIds: number[],
     patientDID: string,
-    privateKey: string
+    privateKey: string,
+    nonce?: number
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    // add nonce if not exist
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var sharedDDRAbi = this.ddr.methods
       .shareDDR(ddrTokenIds, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, sharedDDRAbi)
       .encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -185,6 +207,7 @@ export class DDR {
       CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
     return { receipt, eventLogs };
   }
 
@@ -192,19 +215,25 @@ export class DDR {
     ddrTokenIds: number[],
     patientDID: string,
     providerDID: string,
-    privateKey: string
+    privateKey: string,
+    nonce?: number
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    // add nonce if not exist
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var lockDDRAbi = this.ddr.methods
       .disclosureConsent(ddrTokenIds, providerDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, lockDDRAbi)
       .encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       executeAbi,
@@ -212,11 +241,13 @@ export class DDR {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(
       receipt.logs,
       CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
+
     return { receipt, eventLogs };
   }
 

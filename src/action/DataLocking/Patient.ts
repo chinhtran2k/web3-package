@@ -22,14 +22,20 @@ export class Patient {
   public async mintPatient(
     patientDID: string,
     uri: string,
-    privateKey: string
+    privateKey: string,
+    nonce?: number
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+    // add nonce if not exist
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+
     var mintAbi = this.patient.methods.mint(patientDID, uri).encodeABI();
+
     const receipt = await signAndSendTransaction(
       this.connection,
       mintAbi,
@@ -37,12 +43,12 @@ export class Patient {
       privateKey,
       nonce
     );
+
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Patient.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     const eventMintDDR = await decodedLogsCL.filter(
       (log: any) => log.name === "PatientLockTokenMinted"
     );
-
     let tokenId = eventMintDDR[0].events.patientTokenId;
 
     return { receipt, eventLogs, tokenId };
