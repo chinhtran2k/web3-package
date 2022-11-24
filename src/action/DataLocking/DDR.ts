@@ -31,13 +31,19 @@ export class DDR {
     ddrPatientRawId: string,
     uri: string,
     patientDID: string,
-    privateKey: string
+    privateKey: string,
+    nonce?: number
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
+
+    // add nonce if not exist
+    if (!nonce) {
+      var nonce = await this.connection.web3.eth.getTransactionCount(
+        account.address
+      );
+    }
+    
     var mintAbi = await this.ddr.methods
       .mint(hashedData, ddrRawId, ddrPatientRawId, uri, patientDID)
       .encodeABI();
@@ -182,7 +188,7 @@ export class DDR {
     return { receipt, eventLogs };
   }
 
-  public async disclosureConsentDDRFromProvider(
+  public async disclosureConsentDDR(
     ddrTokenIds: number[],
     patientDID: string,
     providerDID: string,
@@ -194,7 +200,7 @@ export class DDR {
       account.address
     );
     var lockDDRAbi = this.ddr.methods
-      .disclosureConsentDDRFromProvider(ddrTokenIds, providerDID)
+      .disclosureConsent(ddrTokenIds, providerDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, lockDDRAbi)
