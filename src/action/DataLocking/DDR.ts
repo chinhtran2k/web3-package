@@ -204,7 +204,9 @@ export class DDR {
     // Decode log for different contract
     const decodedLogsCL = await decodeLogs(
       receipt.logs,
-      CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
+      CONFIG.ClaimHolder.abi
+        .concat(CONFIG.DDR.abi)
+        .concat(CONFIG.ERC20Proxy.abi)
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
 
@@ -213,8 +215,8 @@ export class DDR {
 
   public async disclosureConsentDDR(
     ddrTokenIds: number[],
-    patientDID: string,
     providerDID: string,
+    patientDID: string,
     privateKey: string,
     nonce?: number
   ) {
