@@ -4,7 +4,7 @@ import { Contract } from "web3-eth-contract/types";
 import { keccak256 } from "@ethersproject/keccak256";
 // import assert from "assert";
 import { BinarySearchTreeNode } from "../../utils/linkedList";
-const assert = require('assert');
+const assert = require("assert");
 
 export class DataIntegrity {
   private connection: Connection;
@@ -64,8 +64,12 @@ export class DataIntegrity {
     ddrId: string,
     hashedData: string
   ) => {
+    const ddrHashLocal = await this.connection.web3.utils.encodePacked(
+      { value: ddrId, type: "string" },
+      { value: hashedData, type: "bytes32" }
+    );
     const ddrHashValue = await this.ddr.methods.getDDRHashByRawId(ddrId).call();
-    if (ddrHashValue === hashedData) {
+    if (ddrHashValue === ddrHashLocal) {
       return true;
     } else {
       return false;
