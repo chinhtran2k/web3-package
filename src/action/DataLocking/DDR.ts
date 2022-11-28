@@ -230,7 +230,7 @@ export class DDR {
     }
 
     var lockDDRAbi = this.ddr.methods
-      .disclosureConsent(ddrTokenIds, providerDID)
+      .disclosureConsentDDR(ddrTokenIds, providerDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, lockDDRAbi)
