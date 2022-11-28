@@ -156,13 +156,10 @@ export class DDR {
     var mintBatchAbi = this.ddr.methods
       .setERC20Proxy(addressErc20Proxy)
       .encodeABI();
-    var executeAbi = this.claimHolder.methods
-      .execute(CONFIG.DDR.address, 0, mintBatchAbi)
-      .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
-      executeAbi,
+      mintBatchAbi,
       CONFIG.DDR.address,
       privateKey,
       nonce
