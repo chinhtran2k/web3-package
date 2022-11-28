@@ -64,9 +64,11 @@ export class DataIntegrity {
     ddrId: string,
     hashedData: string
   ) => {
-    const ddrHashLocal = await this.connection.web3.utils.encodePacked(
-      { value: ddrId, type: "string" },
-      { value: hashedData, type: "bytes32" }
+    const ddrHashLocal = keccak256(
+      await this.connection.web3.utils.encodePacked(
+        { value: ddrId, type: "string" },
+        { value: hashedData, type: "bytes32" }
+      )
     );
     const ddrHashValue = await this.ddr.methods.getDDRHashByRawId(ddrId).call();
     if (ddrHashValue === ddrHashLocal) {
