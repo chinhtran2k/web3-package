@@ -67,6 +67,7 @@ export class DataIntegrity {
   ) => {
     const ddrHashLocal = keccak256(
       await this.connection.web3.utils.encodePacked(
+        { value: patientDID, type: "string"},
         { value: ddrId, type: "string" },
         { value: hashedData, type: "bytes32" }
       )
