@@ -61,6 +61,7 @@ export class DataIntegrity {
   }
 
   public checkIntegritySingleDDR = async (
+    patientDID: string,
     ddrId: string,
     hashedData: string
   ) => {
@@ -70,7 +71,7 @@ export class DataIntegrity {
         { value: hashedData, type: "bytes32" }
       )
     );
-    const ddrHashValue = await this.ddr.methods.getDDRHashByRawId(ddrId).call();
+    const ddrHashValue = await this.ddr.methods.getDDRHashOfPatientDIDByRawId(patientDID, ddrId).call();
     if (ddrHashValue === ddrHashLocal) {
       return true;
     } else {
