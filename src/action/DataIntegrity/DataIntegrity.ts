@@ -67,12 +67,14 @@ export class DataIntegrity {
   ) => {
     const ddrHashLocal = keccak256(
       await this.connection.web3.utils.encodePacked(
-        { value: patientDID, type: "string"},
+        { value: patientDID, type: "address" },
         { value: ddrId, type: "string" },
         { value: hashedData, type: "bytes32" }
       )
     );
-    const ddrHashValue = await this.ddr.methods.getDDRHashOfPatientDIDByRawId(patientDID, ddrId).call();
+    const ddrHashValue = await this.ddr.methods
+      .getDDRHashOfPatientDIDByRawId(patientDID, ddrId)
+      .call();
     if (ddrHashValue === ddrHashLocal) {
       return true;
     } else {
@@ -89,21 +91,30 @@ export class DataIntegrity {
     let tempNode: Array<any> = [];
 
     let ddrHashValue: Array<string> = [];
+    console.log("ddrsRawId", ddrsRawId);
+    console.log("ddrsRawId", ddrsHashedData);
     assert(ddrsRawId.length === ddrsHashedData.length, "Length not match");
 
     for (let i = 0; i < ddrsRawId.length; i++) {
       ddrHashValue.push(
-        this.connection.web3.utils.encodePacked(
-          { value: ddrsRawId[i], type: "string" },
-          { value: ddrsHashedData[i], type: "bytes32" }
+        keccak256(
+          this.connection.web3.utils.encodePacked(
+            { value: patientDID, type: "address" },
+            { value: ddrsRawId[i], type: "string" },
+            { value: ddrsHashedData[i], type: "bytes32" }
+          )
         )
       );
     }
+
+    console.log("ddrHashValue", ddrHashValue);
 
     let listDDROfPatient: Array<number> = await this.ddr.methods
       .getListDDRHashValueOfPatient(patientDID)
       .call();
     let listDDRLength = listDDROfPatient.length;
+
+    console.log(listDDRLength);
 
     assert(
       listDDRLength == ddrsHashedData.length,
@@ -123,16 +134,118 @@ export class DataIntegrity {
       );
       listDDROfPatient = templistDDROfPatient;
     }
+    console.log("listDDROfPatient", listDDROfPatient);
 
-    if (listDDROfPatient.length - ddrsHashedData.length == 1) {
-      ddrsHashedData[ddrsHashedData.length] =
+    if (listDDROfPatient.length - ddrHashValue.length == 1) {
+      ddrHashValue[ddrHashValue.length] =
         "0x0000000000000000000000000000000000000000000000000000000000000000";
     }
 
     // Init bottom level
     for (let i = 0; i < listDDRLength; i++) {
       let merkleNodeTemp = new BinarySearchTreeNode(
-        ddrsHashedData[i],
+        ddrHashValue[i],
+        null,
+        null
+      );
+      console;
+      queueNode.push(merkleNodeTemp);
+    }
+
+    console.log(queueNode);
+
+    // Build merkle tree
+    while (queueNode.length > 1) {
+      while (tempNode.length != 0) {
+        tempNode.pop();
+      }
+
+      // handle even number of nodes
+      if (queueNode.length % 2 == 1) {
+        queueNode.push(
+          new BinarySearchTreeNode(
+            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            null,
+            null
+          )
+        );
+      }
+
+      // build tree
+      while (queueNode.length > 0) {
+        let upperNode = new BinarySearchTreeNode(
+          await keccak256(
+            this.connection.web3.utils.encodePacked(
+              { value: queueNode[0].data, type: "bytes32" },
+              { value: queueNode[1].data, type: "bytes32" }
+            )
+          ),
+          queueNode[0],
+          queueNode[1]
+        );
+
+        tempNode.push(upperNode);
+
+        // remove node queue
+        queueNode = this.popQueue(queueNode, 0);
+        queueNode = this.popQueue(queueNode, 0);
+      }
+
+      queueNode = Array.from(tempNode);
+    }
+
+    // Check root
+    const rootHashOnChain = await this.patient.methods
+      .getPatientRootHashValue(patientDID)
+      .call();
+
+    const rootHashOffChain = queueNode[0].data;
+
+    return rootHashOnChain === rootHashOffChain;
+  };
+
+  public checkIntegrityStudy = async (rootHashValues: Array<string>) => {
+    let queueNode: Array<any> = [];
+    let tempNode: Array<any> = [];
+
+    let listLevelRootHash: Array<string> = await this.patient.methods
+      .getListRootHashValue()
+      .call();
+    let listLevelRootHashLength = listLevelRootHash.length;
+
+    assert(
+      listLevelRootHashLength == rootHashValues.length,
+      "Hashed data length does not match!"
+    );
+
+    assert(listLevelRootHashLength > 0, "No root hash value");
+
+    let listTokenLevel = new Array<number>(listLevelRootHashLength);
+    for (let i = 0; i < listLevelRootHashLength; i++) {
+      listTokenLevel[i] = i;
+    }
+
+    if (listLevelRootHashLength % 2 == 1) {
+      listLevelRootHashLength = listLevelRootHashLength + 1;
+      let templistTokenLevelRootHash = new Array<number>(
+        listLevelRootHashLength
+      );
+      templistTokenLevelRootHash = await this.copyArrayToArrayUINT256(
+        listTokenLevel,
+        templistTokenLevelRootHash
+      );
+      listTokenLevel = templistTokenLevelRootHash;
+    }
+
+    if (listTokenLevel.length - rootHashValues.length == 1) {
+      rootHashValues[rootHashValues.length] =
+        "0x0000000000000000000000000000000000000000000000000000000000000000";
+    }
+
+    // Init bottom level
+    for (let i = 0; i < listLevelRootHashLength; i++) {
+      let merkleNodeTemp = new BinarySearchTreeNode(
+        rootHashValues[i],
         null,
         null
       );
@@ -182,7 +295,7 @@ export class DataIntegrity {
 
     // Check root
     const rootHashOnChain = await this.patient.methods
-      .getPatientRootHashValue(patientDID)
+      .getRootHashPOCPatient()
       .call();
 
     const rootHashOffChain = queueNode[0].data;

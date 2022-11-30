@@ -75,6 +75,7 @@ export class DDR {
     let ddrs = Array<any>();
     ddrs.push({
       tokenId: tokenId,
+      patientDID: patientDID,
       ddrRawId: ddrRawId,
       hashValue: hashValue,
     });
@@ -84,7 +85,7 @@ export class DDR {
   public async mintBatchDDR(
     hashValues: any[],
     ddrRawIds: string[],
-    uris: string[], 
+    uris: string[],
     patientDID: string,
     privateKey: string,
     nonce?: number
@@ -129,6 +130,7 @@ export class DDR {
     for (let i = 0; i < tokenId.length; i++) {
       ddrs.push({
         tokenId: tokenId[i],
+        patientDID: patientDID,
         ddrRawId: ddrRawId[i],
         hashValue: hashValue[i],
       });
