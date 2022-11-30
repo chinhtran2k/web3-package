@@ -28,7 +28,6 @@ export class DDR {
   public async mintDDR(
     hashedData: string,
     ddrRawId: string,
-    ddrPatientRawId: string,
     uri: string,
     patientDID: string,
     privateKey: string,
@@ -47,7 +46,7 @@ export class DDR {
     );
 
     var mintAbi = await this.ddr.methods
-      .mint(hashedData, ddrRawId, ddrPatientRawId, uri, patientDID)
+      .mint(hashedData, ddrRawId, uri, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
@@ -85,8 +84,7 @@ export class DDR {
   public async mintBatchDDR(
     hashValues: any[],
     ddrRawIds: string[],
-    ddrPatientRawIds: string[],
-    uris: string[],
+    uris: string[], 
     patientDID: string,
     privateKey: string,
     nonce?: number
@@ -101,7 +99,7 @@ export class DDR {
     }
 
     var mintBatchAbi = this.ddr.methods
-      .mintBatch(hashValues, ddrRawIds, ddrPatientRawIds, uris, patientDID)
+      .mintBatch(hashValues, ddrRawIds, uris, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
