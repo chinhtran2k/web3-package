@@ -91,8 +91,6 @@ export class DataIntegrity {
     let tempNode: Array<any> = [];
 
     let ddrHashValue: Array<string> = [];
-    console.log("ddrsRawId", ddrsRawId);
-    console.log("ddrsRawId", ddrsHashedData);
     assert(ddrsRawId.length === ddrsHashedData.length, "Length not match");
 
     for (let i = 0; i < ddrsRawId.length; i++) {
@@ -107,14 +105,10 @@ export class DataIntegrity {
       );
     }
 
-    console.log("ddrHashValue", ddrHashValue);
-
     let listDDROfPatient: Array<number> = await this.ddr.methods
       .getListDDRHashValueOfPatient(patientDID)
       .call();
     let listDDRLength = listDDROfPatient.length;
-
-    console.log(listDDRLength);
 
     assert(
       listDDRLength == ddrsHashedData.length,
@@ -134,7 +128,6 @@ export class DataIntegrity {
       );
       listDDROfPatient = templistDDROfPatient;
     }
-    console.log("listDDROfPatient", listDDROfPatient);
 
     if (listDDROfPatient.length - ddrHashValue.length == 1) {
       ddrHashValue[ddrHashValue.length] =
@@ -151,8 +144,6 @@ export class DataIntegrity {
       console;
       queueNode.push(merkleNodeTemp);
     }
-
-    console.log(queueNode);
 
     // Build merkle tree
     while (queueNode.length > 1) {
