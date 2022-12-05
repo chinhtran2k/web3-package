@@ -83,7 +83,7 @@ export class DDR {
   }
 
   public async mintBatchDDR(
-    hashValues: any[],
+    hashDatas: any[],
     ddrRawIds: string[],
     uris: string[],
     patientDID: string,
@@ -100,7 +100,7 @@ export class DDR {
     }
 
     var mintBatchAbi = this.ddr.methods
-      .mintBatch(hashValues, ddrRawIds, uris, patientDID)
+      .mintBatch(hashDatas, ddrRawIds, uris, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
