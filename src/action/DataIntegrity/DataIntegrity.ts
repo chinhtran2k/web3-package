@@ -60,10 +60,25 @@ export class DataIntegrity {
     return queueNode;
   }
 
+  private encodePackedListAddress(listAddress: Array<string>) {
+    let encoded = "0x";
+    let prefix = "0x000000000000000000000000";
+    for (let i = 0; i < listAddress.length; i++) {
+      let addrToByte32 = prefix + listAddress[i].slice(2);
+      let encodeByte32 = this.connection.web3.utils.encodePacked({
+        value: addrToByte32,
+        type: "bytes32",
+      });
+      encoded += encodeByte32.slice(2);
+    }
+    return encoded;
+  }
+
   public checkIntegritySingleDDR = async (
     patientDID: string,
     ddrId: string,
-    hashedData: string
+    hashedData: string,
+    ddrConsentedTo: Array<string>
   ) => {
     const ddrHashLocal = keccak256(
       await this.connection.web3.utils.encodePacked(
@@ -72,6 +87,21 @@ export class DataIntegrity {
         { value: hashedData, type: "bytes32" }
       )
     );
+
+    let tokenId = await this.ddr.methods
+      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
+      .call();
+    let consentedDID = this.ddr.methods.getDIDConsentedOf(parseInt(tokenId));
+    assert(
+      consentedDID.length === ddrConsentedTo.length,
+      "Consented list length not match"
+    );
+    for (let i = 0; i < ddrConsentedTo.length; i++) {
+      if (ddrConsentedTo[i] !== consentedDID[i]) {
+        return false;
+      }
+    }
+
     const ddrHashValue = await this.ddr.methods
       .getDDRHashOfPatientDIDByRawId(patientDID, ddrId)
       .call();
@@ -85,7 +115,8 @@ export class DataIntegrity {
   public checkIntegritySinglePatient = async (
     patientDID: string,
     ddrsRawId: Array<string>,
-    ddrsHashedData: Array<string>
+    ddrsHashedData: Array<string>,
+    ddrConsentedTo: Array<Array<string>>
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
@@ -106,7 +137,7 @@ export class DataIntegrity {
     }
 
     let listDDROfPatient: Array<number> = await this.ddr.methods
-      .getListDDRHashValueOfPatient(patientDID)
+      .getListDDRTokenIdOfPatient(patientDID)
       .call();
     let listDDRLength = listDDROfPatient.length;
 
@@ -136,8 +167,28 @@ export class DataIntegrity {
 
     // Init bottom level
     for (let i = 0; i < listDDRLength; i++) {
+      let combineConsentedDID =
+        "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+      console.log(i);
+      if (ddrConsentedTo[i] && ddrConsentedTo[i].length > 0) {
+        combineConsentedDID = keccak256(
+          this.connection.web3.utils.encodePacked({
+            value: this.encodePackedListAddress(ddrConsentedTo[i]),
+            type: "bytes32",
+          })
+        );
+      }
+      console.log(combineConsentedDID);
+      let ddrCombinedHash = await keccak256(
+        this.connection.web3.utils.encodePacked(
+          { value: ddrHashValue[i], type: "bytes32" },
+          { value: combineConsentedDID, type: "bytes32" }
+        )
+      );
+
       let merkleNodeTemp = new BinarySearchTreeNode(
-        ddrHashValue[i],
+        ddrCombinedHash,
         null,
         null
       );
@@ -191,6 +242,9 @@ export class DataIntegrity {
       .call();
 
     const rootHashOffChain = queueNode[0].data;
+
+    console.log("rootHashOnChain: " + rootHashOnChain);
+    console.log("rootHashOffChain: " + rootHashOffChain);
 
     return rootHashOnChain === rootHashOffChain;
   };
