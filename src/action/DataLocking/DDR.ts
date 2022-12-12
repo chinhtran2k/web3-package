@@ -220,6 +220,14 @@ export class DDR {
     return { receipt, eventLogs };
   }
 
+  public async getDDR(patientDID: string, ddrId: string) {
+    let tokenId = await this.ddr.methods
+      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
+      .call();
+    let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
+    return ddr;
+  }
+
   public async disclosureConsentDDR(
     ddrIds: Array<string>,
     providerDID: string,
