@@ -227,7 +227,7 @@ export class DDR {
     return ddr;
   }
 
-  public async disclosureConsentDDR(
+  public async consentDisclosureDDR(
     ddrIds: Array<string>,
     providerDID: string,
     patientDID: string,
@@ -253,7 +253,7 @@ export class DDR {
     }
 
     var lockDDRAbi = this.ddr.methods
-      .disclosureConsentDDR(ddrTokenIds, providerDID)
+      .consentDisclosureDDR(ddrTokenIds, providerDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, lockDDRAbi)
