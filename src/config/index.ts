@@ -5,7 +5,7 @@ interface ICONFIG {
   AuthenticatorHelper: AuthenticatorHelper;
   DDR: DDR;
   Patient: Patient;
-  Pharmacy: Pharmacy;
+  Provider: Provider;
   POCStudy: POCStudy;
   ClaimHolder: ClaimHolder;
   ERC20Proxy: ERC20Proxy;
@@ -38,7 +38,7 @@ interface Patient {
   contractName: string;
 }
 
-interface Pharmacy {
+interface Provider {
   address: string;
   abi: AbiItem[];
   bytecode: string;

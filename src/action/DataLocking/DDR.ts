@@ -186,10 +186,9 @@ export class DDR {
     let ddrTokenIds = Array<number>();
 
     for (let i = 0; i < ddrIds.length; i++) {
-      let ddrTokenId = await this.ddr.methods.getTokenIdOfPatientDIDByRawId(
-        patientDID,
-        ddrIds[i]
-      );
+      let ddrTokenId = await this.ddr.methods
+        .getTokenIdOfPatientDIDByRawId(patientDID, ddrIds[i])
+        .call();
       ddrTokenIds.push(ddrTokenId);
     }
 
@@ -247,10 +246,9 @@ export class DDR {
     let ddrTokenIds = Array<number>();
 
     for (let i = 0; i < ddrIds.length; i++) {
-      let ddrTokenId = await this.ddr.methods.getTokenIdOfPatientDIDByRawId(
-        patientDID,
-        ddrIds[i]
-      );
+      let ddrTokenId = await this.ddr.methods
+        .getTokenIdOfPatientDIDByRawId(patientDID, ddrIds[i])
+        .call();
       ddrTokenIds.push(ddrTokenId);
     }
 

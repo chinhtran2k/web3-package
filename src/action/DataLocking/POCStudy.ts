@@ -42,24 +42,26 @@ export class POCStudy {
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.POCStudy.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     const eventMintDDR = await decodedLogsCL.filter(
-      (log: any) => log.name === "LockedPOCPatient"
+      (log: any) => log.name === "LockedPOC"
     );
     let tokenId = eventMintDDR[0].events.pocTokenId;
+    let hashValue = eventMintDDR[0].events.rootHashPOC;
 
-    return { receipt, eventLogs, tokenId };
+    return { receipt, eventLogs, tokenId, hashValue };
   }
 
-  public async getRootHashPOCPatient() {
-    var RootHashPOCPatient = this.pcoStudy.methods
-      .getRootHashPOCPatient()
-      .call();
+  public async getRootTokenIdPOC() {
+    var RootHashPOCPatient = this.pcoStudy.methods.getRootTokenIdPOC().call();
     return RootHashPOCPatient;
   }
 
-  public async getRootNodeIdPOCPatient() {
-    var RootNodeIdPOCPatient = this.pcoStudy.methods
-      .getRootNodeIdPOCPatient()
-      .call();
+  public async getRootNodeIdPOC() {
+    var RootNodeIdPOCPatient = this.pcoStudy.methods.getRootNodeIdPOC().call();
+    return RootNodeIdPOCPatient;
+  }
+
+  public async getRootHashPOC() {
+    var RootNodeIdPOCPatient = this.pcoStudy.methods.getRootHashPOC().call();
     return RootNodeIdPOCPatient;
   }
 }

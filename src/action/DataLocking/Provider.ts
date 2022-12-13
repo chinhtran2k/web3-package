@@ -4,23 +4,25 @@ import { Contract } from "web3-eth-contract/types";
 import { signAndSendTransaction } from "../../utils";
 const { decodeLogs } = require("abi-parser-pack");
 
-export class Patient {
+export class Provider {
   private connection: Connection;
-  private patient: Contract;
+  private provider: Contract;
   private claimHolder: Contract;
 
   constructor(connection: Connection) {
     this.connection = connection;
-    this.patient = new this.connection.web3.eth.Contract(
-      CONFIG.Patient.abi,
-      CONFIG.Patient.address
+    this.provider = new this.connection.web3.eth.Contract(
+      CONFIG.Provider.abi,
+      CONFIG.Provider.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
       CONFIG.ClaimHolder.abi
     );
   }
-  public async mintPatient(
-    patientDID: string,
+  public async mintProvider(
+    providerDID: string,
+    accountId: string,
+    claimKey: string,
     uri: string,
     privateKey: string,
     nonce?: number
@@ -34,41 +36,47 @@ export class Patient {
       );
     }
 
-    var mintAbi = this.patient.methods.mint(patientDID, uri).encodeABI();
+    var mintAbi = this.provider.methods
+      .mint(providerDID, accountId, claimKey, uri)
+      .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
       mintAbi,
-      CONFIG.Patient.address,
+      CONFIG.Provider.address,
       privateKey,
       nonce
     );
 
-    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Patient.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Provider.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     const eventMintDDR = await decodedLogsCL.filter(
-      (log: any) => log.name === "PatientLockTokenMinted"
+      (log: any) => log.name === "ProviderLockTokenMinted"
     );
-    let tokenId = eventMintDDR[0].events.patientTokenId;
+    let tokenId = eventMintDDR[0].events.providerTokenId;
     let hashValue = eventMintDDR[0].events.rootHash;
 
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
-  public async getPatientRootHashValue(patientDID: string) {
-    var PatientRootHashValue = this.patient.methods
-      .getPatientRootHashValue(patientDID)
+  public async getListTokenIdProvider() {
+    var PatientRootHashValue = this.provider.methods
+      .getListTokenIdProvider()
       .call();
     return PatientRootHashValue;
   }
 
-  public async getListRootHashValue() {
-    var listRootHashValue = this.patient.methods.getListRootHashValue().call();
-    return listRootHashValue;
+  public async getListAddressOfProvider() {
+    var PatientRootHashValue = this.provider.methods
+      .getListAddressOfProvider()
+      .call();
+    return PatientRootHashValue;
   }
 
-  public async getListAddressPatient() {
-    var listRootHashValue = this.patient.methods.getListAddressPatient().call();
+  public async getListHashValueProvider(providerDID: string) {
+    var listRootHashValue = this.provider.methods
+      .getHashValueProvider(providerDID)
+      .call();
     return listRootHashValue;
   }
 }

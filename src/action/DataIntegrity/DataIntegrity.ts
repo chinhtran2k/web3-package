@@ -12,6 +12,7 @@ export class DataIntegrity {
   private claimHolder: Contract;
   private authenticator: any;
   private patient: Contract;
+  private provider: Contract;
   private pcoStudy: Contract;
 
   constructor(connection: Connection) {
@@ -30,6 +31,10 @@ export class DataIntegrity {
     this.patient = new this.connection.web3.eth.Contract(
       CONFIG.Patient.abi,
       CONFIG.Patient.address
+    );
+    this.provider = new this.connection.web3.eth.Contract(
+      CONFIG.Provider.abi,
+      CONFIG.Provider.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
       CONFIG.ClaimHolder.abi
@@ -249,48 +254,58 @@ export class DataIntegrity {
     return rootHashOnChain === rootHashOffChain;
   };
 
-  public checkIntegrityStudy = async (rootHashValues: Array<string>) => {
+  public checkIntegrityStudy = async (rootHashValuesPatient: Array<string>, rootHashValuesProvider: Array<string>) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
 
-    let listLevelRootHash: Array<string> = await this.patient.methods
-      .getListRootHashValue()
+    let listPatientAddress : Array<string> = await this.patient.methods
+      .getListAddressPatient()
       .call();
-    let listLevelRootHashLength = listLevelRootHash.length;
 
     assert(
-      listLevelRootHashLength == rootHashValues.length,
-      "Hashed data length does not match!"
+      listPatientAddress.length == rootHashValuesPatient.length,
+      "Hashed data of patient length does not match!"
     );
 
-    assert(listLevelRootHashLength > 0, "No root hash value");
+    let listProviderAddress : Array<string> = await this.provider.methods
+      .getListAddressOfProvider()
+      .call();
 
-    let listTokenLevel = new Array<number>(listLevelRootHashLength);
-    for (let i = 0; i < listLevelRootHashLength; i++) {
-      listTokenLevel[i] = i;
+    assert(
+      listProviderAddress.length == rootHashValuesProvider.length,
+      "Hashed data of provider length does not match!"
+    );
+
+    let listHashValue = new Array<string>(rootHashValuesPatient.length + rootHashValuesProvider.length)
+    for( let i=0; i<rootHashValuesPatient.length; i++){
+      listHashValue[i] = rootHashValuesPatient[i];
     }
+    for( let i=0; i<rootHashValuesProvider.length; i++){
+      listHashValue[i+rootHashValuesPatient.length] = rootHashValuesProvider[i];
+    }
+
+    let listLevelRootHashLength = listHashValue.length;
+
 
     if (listLevelRootHashLength % 2 == 1) {
       listLevelRootHashLength = listLevelRootHashLength + 1;
-      let templistTokenLevelRootHash = new Array<number>(
-        listLevelRootHashLength
-      );
-      templistTokenLevelRootHash = await this.copyArrayToArrayUINT256(
-        listTokenLevel,
-        templistTokenLevelRootHash
-      );
-      listTokenLevel = templistTokenLevelRootHash;
-    }
 
-    if (listTokenLevel.length - rootHashValues.length == 1) {
-      rootHashValues[rootHashValues.length] =
-        "0x0000000000000000000000000000000000000000000000000000000000000000";
+      let _tempListLevelRootHash = new Array<string>(listLevelRootHashLength);
+
+      // listHashValue = new Array<string>(listLevelRootHashLength);
+      for (let k = 0; k < listLevelRootHashLength; k++) {
+          _tempListLevelRootHash[k] = listHashValue[k];
+      }
+
+      _tempListLevelRootHash[listLevelRootHashLength-1] = "0x0000000000000000000000000000000000000000000000000000000000000000";
+      listHashValue = _tempListLevelRootHash;
     }
+    console.log(listHashValue)
 
     // Init bottom level
     for (let i = 0; i < listLevelRootHashLength; i++) {
       let merkleNodeTemp = new BinarySearchTreeNode(
-        rootHashValues[i],
+        listHashValue[i],
         null,
         null
       );
@@ -339,12 +354,29 @@ export class DataIntegrity {
     }
 
     // Check root
-    const rootHashOnChain = await this.patient.methods
-      .getRootHashPOCPatient()
+    const rootHashOnChain = await this.pcoStudy.methods
+      .getRootHashPOC()
       .call();
 
     const rootHashOffChain = queueNode[0].data;
 
+    console.log(rootHashOnChain);
+    console.log(rootHashOffChain);
+
     return rootHashOnChain === rootHashOffChain;
+  };
+
+  public checkIntegritySingleProvider = async (
+    providerDID: string,
+    dataRooyHash: string,
+  ) => {
+    const ddrHashValue = await this.provider.methods
+      .getHashValueProvider(providerDID)
+      .call();
+    if (ddrHashValue === dataRooyHash) {
+      return true;
+    } else {
+      return false;
+    }
   };
 }
