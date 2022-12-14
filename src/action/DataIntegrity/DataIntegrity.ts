@@ -254,11 +254,14 @@ export class DataIntegrity {
     return rootHashOnChain === rootHashOffChain;
   };
 
-  public checkIntegrityStudy = async (rootHashValuesPatient: Array<string>, rootHashValuesProvider: Array<string>) => {
+  public checkIntegrityStudy = async (
+    rootHashValuesPatient: Array<string>,
+    rootHashValuesProvider: Array<string>
+  ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
 
-    let listPatientAddress : Array<string> = await this.patient.methods
+    let listPatientAddress: Array<string> = await this.patient.methods
       .getListAddressPatient()
       .call();
 
@@ -267,7 +270,7 @@ export class DataIntegrity {
       "Hashed data of patient length does not match!"
     );
 
-    let listProviderAddress : Array<string> = await this.provider.methods
+    let listProviderAddress: Array<string> = await this.provider.methods
       .getListAddressOfProvider()
       .call();
 
@@ -276,31 +279,32 @@ export class DataIntegrity {
       "Hashed data of provider length does not match!"
     );
 
-    let listHashValue = new Array<string>(rootHashValuesPatient.length + rootHashValuesProvider.length)
-    for( let i=0; i<rootHashValuesPatient.length; i++){
+    let listHashValue = new Array<string>(
+      rootHashValuesPatient.length + rootHashValuesProvider.length
+    );
+    for (let i = 0; i < rootHashValuesPatient.length; i++) {
       listHashValue[i] = rootHashValuesPatient[i];
     }
-    for( let i=0; i<rootHashValuesProvider.length; i++){
-      listHashValue[i+rootHashValuesPatient.length] = rootHashValuesProvider[i];
+    for (let i = 0; i < rootHashValuesProvider.length; i++) {
+      listHashValue[i + rootHashValuesPatient.length] =
+        rootHashValuesProvider[i];
     }
 
     let listLevelRootHashLength = listHashValue.length;
-
 
     if (listLevelRootHashLength % 2 == 1) {
       listLevelRootHashLength = listLevelRootHashLength + 1;
 
       let _tempListLevelRootHash = new Array<string>(listLevelRootHashLength);
 
-      // listHashValue = new Array<string>(listLevelRootHashLength);
       for (let k = 0; k < listLevelRootHashLength; k++) {
-          _tempListLevelRootHash[k] = listHashValue[k];
+        _tempListLevelRootHash[k] = listHashValue[k];
       }
 
-      _tempListLevelRootHash[listLevelRootHashLength-1] = "0x0000000000000000000000000000000000000000000000000000000000000000";
+      _tempListLevelRootHash[listLevelRootHashLength - 1] =
+        "0x0000000000000000000000000000000000000000000000000000000000000000";
       listHashValue = _tempListLevelRootHash;
     }
-    console.log(listHashValue)
 
     // Init bottom level
     for (let i = 0; i < listLevelRootHashLength; i++) {
@@ -354,9 +358,7 @@ export class DataIntegrity {
     }
 
     // Check root
-    const rootHashOnChain = await this.pcoStudy.methods
-      .getRootHashPOC()
-      .call();
+    const rootHashOnChain = await this.pcoStudy.methods.getRootHashPOC().call();
 
     const rootHashOffChain = queueNode[0].data;
 
@@ -368,12 +370,12 @@ export class DataIntegrity {
 
   public checkIntegritySingleProvider = async (
     providerDID: string,
-    dataRooyHash: string,
+    dataRootHash: string
   ) => {
     const ddrHashValue = await this.provider.methods
       .getHashValueProvider(providerDID)
       .call();
-    if (ddrHashValue === dataRooyHash) {
+    if (ddrHashValue === dataRootHash) {
       return true;
     } else {
       return false;

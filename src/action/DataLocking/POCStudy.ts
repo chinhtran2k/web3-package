@@ -64,4 +64,5 @@ export class POCStudy {
     var RootNodeIdPOCPatient = this.pcoStudy.methods.getRootHashPOC().call();
     return RootNodeIdPOCPatient;
   }
+  
 }

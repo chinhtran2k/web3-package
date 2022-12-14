@@ -22,7 +22,6 @@ export class Provider {
   public async mintProvider(
     providerDID: string,
     accountId: string,
-    claimKey: string,
     uri: string,
     privateKey: string,
     nonce?: number
@@ -37,7 +36,7 @@ export class Provider {
     }
 
     var mintAbi = this.provider.methods
-      .mint(providerDID, accountId, claimKey, uri)
+      .mint(providerDID, accountId, uri)
       .encodeABI();
 
     const receipt = await signAndSendTransaction(
@@ -79,4 +78,5 @@ export class Provider {
       .call();
     return listRootHashValue;
   }
+
 }
