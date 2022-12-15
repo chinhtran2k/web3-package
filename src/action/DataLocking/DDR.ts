@@ -8,7 +8,7 @@ export class DDR {
   private connection: Connection;
   private ddr: Contract;
   private claimHolder: Contract;
-  private authenticator: any;
+  private authenticator: Contract;
 
   constructor(connection: Connection) {
     this.connection = connection;
@@ -231,15 +231,13 @@ export class DDR {
     ddrIds: Array<string>,
     providerDID: string,
     patientDID: string,
-    privateKey: string,
+    addressOfDelegateKey: string,
     nonce?: number
   ) {
-    const account =
-      this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     // add nonce if not exist
     if (!nonce) {
       var nonce = await this.connection.web3.eth.getTransactionCount(
-        account.address
+        addressOfDelegateKey
       );
     }
 
@@ -259,21 +257,23 @@ export class DDR {
       .execute(CONFIG.DDR.address, 0, lockDDRAbi)
       .encodeABI();
 
-    const receipt = await signAndSendTransaction(
-      this.connection,
-      executeAbi,
-      patientDID,
-      privateKey,
-      nonce
-    );
+    let gas = await this.connection.web3.eth.estimateGas({
+      from: addressOfDelegateKey,
+      to: patientDID,
+      data: executeAbi,
+    });
+    let gasPrice = await this.connection.web3.eth.getGasPrice();
 
-    const decodedLogsCL = await decodeLogs(
-      receipt.logs,
-      CONFIG.ClaimHolder.abi.concat(CONFIG.DDR.abi)
-    );
-    let eventLogs = await decodedLogsCL.filter((log: any) => log);
+    const unSignedTx = {
+      to: patientDID,
+      from: addressOfDelegateKey,
+      gas: gas,
+      gasPrice: gasPrice,
+      nonce: nonce,
+      data: executeAbi,
+    };
 
-    return { receipt, eventLogs };
+    return unSignedTx;
   }
 
   public async getShareDDR(patientDID: string, ddrId: string) {
