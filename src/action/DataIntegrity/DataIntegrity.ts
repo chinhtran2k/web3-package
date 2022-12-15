@@ -96,7 +96,8 @@ export class DataIntegrity {
     let tokenId = await this.ddr.methods
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
-    let consentedDID = this.ddr.methods.getDIDConsentedOf(parseInt(tokenId));
+    let consentedDID = await this.ddr.methods.getDIDConsentedOf(parseInt(tokenId)).call();
+    console.log(typeof consentedDID)
     assert(
       consentedDID.length === ddrConsentedTo.length,
       "Consented list length not match"
