@@ -55,6 +55,13 @@ export class Patient {
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
+  public async getHashClaim(patientDID: string){
+    var hashClaim = this.patient.methods
+      .getHashClaim(patientDID)
+      .call();
+    return hashClaim;
+  }
+
   public async getPatientRootHashValue(patientDID: string) {
     var PatientRootHashValue = this.patient.methods
       .getPatientRootHashValue(patientDID)

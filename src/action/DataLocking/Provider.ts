@@ -58,6 +58,13 @@ export class Provider {
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
+  public async getHashClaim(providerDID: string){
+    var hashClaim = this.provider.methods
+      .getHashClaim(providerDID)
+      .call();
+    return hashClaim;
+  }
+
   public async getListTokenIdProvider() {
     var PatientRootHashValue = this.provider.methods
       .getListTokenIdProvider()

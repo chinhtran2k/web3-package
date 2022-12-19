@@ -21,9 +21,6 @@ export class DataIntegrity {
       CONFIG.Authenticator.abi,
       CONFIG.Authenticator.address
     );
-    this.claimHolder = new this.connection.web3.eth.Contract(
-      CONFIG.ClaimHolder.abi
-    );
     this.ddr = new this.connection.web3.eth.Contract(
       CONFIG.DDR.abi,
       CONFIG.DDR.address
@@ -37,7 +34,7 @@ export class DataIntegrity {
       CONFIG.Provider.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
-      CONFIG.ClaimHolder.abi
+      CONFIG.ClaimHolder.abi,
     );
     this.pcoStudy = new this.connection.web3.eth.Contract(
       CONFIG.POCStudy.abi,
@@ -120,9 +117,10 @@ export class DataIntegrity {
 
   public checkIntegritySinglePatient = async (
     patientDID: string,
+    hashClaim: string,
     ddrsRawId: Array<string>,
     ddrsHashedData: Array<string>,
-    ddrConsentedTo: Array<Array<string>>
+    ddrsConsentedTo: Array<Array<string>>
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
@@ -176,16 +174,14 @@ export class DataIntegrity {
       let combineConsentedDID =
         "0x0000000000000000000000000000000000000000000000000000000000000000";
 
-      console.log(i);
-      if (ddrConsentedTo[i] && ddrConsentedTo[i].length > 0) {
+      if (ddrsConsentedTo[i] && ddrsConsentedTo[i].length > 0) {
         combineConsentedDID = keccak256(
           this.connection.web3.utils.encodePacked({
-            value: this.encodePackedListAddress(ddrConsentedTo[i]),
+            value: this.encodePackedListAddress(ddrsConsentedTo[i]),
             type: "bytes32",
           })
         );
       }
-      console.log(combineConsentedDID);
       let ddrCombinedHash = await keccak256(
         this.connection.web3.utils.encodePacked(
           { value: ddrHashValue[i], type: "bytes32" },
@@ -246,8 +242,17 @@ export class DataIntegrity {
     const rootHashOnChain = await this.patient.methods
       .getPatientRootHashValue(patientDID)
       .call();
-
-    const rootHashOffChain = queueNode[0].data;
+    this.claimHolder = new this.connection.web3.eth.Contract(
+      CONFIG.ClaimHolder.abi,
+      patientDID
+    );
+    const rootHashOffChain = keccak256(
+      this.connection.web3.utils.encodePacked(
+        { value: patientDID, type: "address" },
+        { value: queueNode[0].data, type: "bytes32" },
+        { value: hashClaim, type: "bytes32" }
+      )
+    );
 
     console.log("rootHashOnChain: " + rootHashOnChain);
     console.log("rootHashOffChain: " + rootHashOffChain);
@@ -361,7 +366,7 @@ export class DataIntegrity {
     // Check root
     const rootHashOnChain = await this.pcoStudy.methods.getRootHashPOC().call();
 
-    const rootHashOffChain = queueNode[0].data;
+    const rootHashOffChain =  queueNode[0].data;
 
     console.log(rootHashOnChain);
     console.log(rootHashOffChain);
@@ -371,15 +376,24 @@ export class DataIntegrity {
 
   public checkIntegritySingleProvider = async (
     providerDID: string,
-    dataRootHash: string
+    accountID: string,
+    hashClaim: string
   ) => {
-    const ddrHashValue = await this.provider.methods
+    const rootHashOnChain = await this.provider.methods
       .getHashValueProvider(providerDID)
       .call();
-    if (ddrHashValue === dataRootHash) {
+    const rootHashOffChain = keccak256(
+      this.connection.web3.utils.encodePacked(
+        { value: providerDID, type: "address" },
+        { value: accountID, type: "string" },
+        { value: hashClaim, type: "bytes32" }
+      )
+    );
+    if (rootHashOffChain === rootHashOnChain) {
       return true;
     } else {
       return false;
     }
   };
+
 }
