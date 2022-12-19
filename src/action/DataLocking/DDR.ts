@@ -219,29 +219,39 @@ export class DDR {
     return { receipt, eventLogs };
   }
 
-  public async getDDR(patientDID: string, ddrId: string) {
-    let tokenId = await this.ddr.methods
-      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
-      .call();
-    let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
-    return ddr;
-  }
+  public async getDDR(patientDID: string, ddrId: Array<string>) {
+    if (ddrId.length == 0) {
+      let patient = new this.connection.web3.eth.Contract(
+        CONFIG.ClaimHolder.abi,
+        patientDID
+      );
 
-  public async getAllDDR(patientDID: string) {
-    let patient = new this.connection.web3.eth.Contract(
-      CONFIG.ClaimHolder.abi,
-      patientDID
-    );
+      const patientDIDOwner = await patient.methods.owner().call();
 
-    const patientDIDOwner = await patient.methods.owner().call();
-
-    let tokenId = await this.ddr.methods.balanceOf(patientDIDOwner).call();
-    let ddrs = Array<any>();
-    for (let i = 0; i < parseInt(tokenId); i++) {
-      let ddr = await this.ddr.methods.getToken(i).call();
-      ddrs.push(ddr);
+      let tokenId = await this.ddr.methods.balanceOf(patientDIDOwner).call();
+      let ddrs = Array<any>();
+      for (let i = 0; i < parseInt(tokenId); i++) {
+        let ddr = await this.ddr.methods.getToken(i).call();
+        ddrs.push(ddr);
+      }
+      return ddrs;
+    } else if (ddrId.length === 1) {
+      let tokenId = await this.ddr.methods
+        .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
+        .call();
+      let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
+      return ddr;
+    } else {
+      let ddrs = Array<any>();
+      for (let i = 0; i < ddrId.length; i++) {
+        let tokenId = await this.ddr.methods
+          .getTokenIdOfPatientDIDByRawId(patientDID, ddrId[i])
+          .call();
+        let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
+        ddrs.push(ddr);
+      }
+      return ddrs;
     }
-    return ddrs;
   }
 
   public async consentDisclosureDDR(
