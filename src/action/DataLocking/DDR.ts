@@ -237,7 +237,7 @@ export class DDR {
       return ddrs;
     } else if (ddrId.length === 1) {
       let tokenId = await this.ddr.methods
-        .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
+        .getTokenIdOfPatientDIDByRawId(patientDID, ddrId[0])
         .call();
       let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
       return ddr;
