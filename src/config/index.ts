@@ -1,15 +1,40 @@
 import { AbiItem, AbiInput } from "web3-utils/types";
 
 interface ICONFIG {
+  ClaimHolder: ClaimHolder;
+  ClaimVerifier: ClaimVerifier;
+  Identity: Identity;
   Authenticator: Authenticator;
   AuthenticatorHelper: AuthenticatorHelper;
   DDR: DDR;
   Patient: Patient;
   Provider: Provider;
   POCStudy: POCStudy;
-  ClaimHolder: ClaimHolder;
   ERC20Proxy: ERC20Proxy;
+  PCO: PCO;
 }
+
+interface ClaimHolder {
+  address: string;
+  abi: AbiItem[];
+  bytecode: string;
+  contractName: string;
+}
+
+interface ClaimVerifier {
+  address: string;
+  abi: AbiItem[];
+  bytecode: string;
+  contractName: string;
+}
+
+interface Identity {
+  address: string;
+  abi: AbiItem[];
+  bytecode: string;
+  contractName: string;
+}
+
 interface Authenticator {
   address: string;
   abi: AbiItem[];
@@ -59,7 +84,7 @@ interface ERC20Proxy {
   contractName: string;
 }
 
-interface ClaimHolder {
+interface PCO {
   address: string;
   abi: AbiItem[];
   bytecode: string;
