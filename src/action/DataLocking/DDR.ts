@@ -227,6 +227,23 @@ export class DDR {
     return ddr;
   }
 
+  public async getAllDDR(patientDID: string) {
+    let patient = new this.connection.web3.eth.Contract(
+      CONFIG.ClaimHolder.abi,
+      patientDID
+    );
+
+    const patientDIDOwner = await patient.methods.owner().call();
+
+    let tokenId = await this.ddr.methods.balanceOf(patientDIDOwner).call();
+    let ddrs = Array<any>();
+    for (let i = 0; i < parseInt(tokenId); i++) {
+      let ddr = await this.ddr.methods.getToken(i).call();
+      ddrs.push(ddr);
+    }
+    return ddrs;
+  }
+
   public async consentDisclosureDDR(
     ddrIds: Array<string>,
     providerDID: string,
