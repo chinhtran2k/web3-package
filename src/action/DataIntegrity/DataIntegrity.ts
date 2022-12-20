@@ -253,9 +253,6 @@ export class DataIntegrity {
       )
     );
 
-    console.log("rootHashOnChain: " + rootHashOnChain);
-    console.log("rootHashOffChain: " + rootHashOffChain);
-
     return rootHashOnChain === rootHashOffChain;
   };
 
