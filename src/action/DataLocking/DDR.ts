@@ -232,10 +232,8 @@ export class DDR {
       CONFIG.ClaimHolder.abi,
       patientDID
     );
-
-    const patientDIDOwner = await patient.methods.owner().call();
-
-    let tokenIds = await this.ddr.methods.balanceOf(patientDIDOwner).call();
+    
+    let tokenIds = await this.ddr.methods.getListDDRTokenIdOfPatient(patientDID).call();
     let ddrs = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
       let ddr = await this.ddr.methods.getToken(i).call();
