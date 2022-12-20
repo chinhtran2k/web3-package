@@ -227,33 +227,21 @@ export class DDR {
     return ddr;
   }
 
-  public async getListDDR(patientDID: string, ddrIds: Array<string>) {
-    if (ddrIds.length == 0) {
-      let patient = new this.connection.web3.eth.Contract(
-        CONFIG.ClaimHolder.abi,
-        patientDID
-      );
+  public async getAlltDDR(patientDID: string) {
+    let patient = new this.connection.web3.eth.Contract(
+      CONFIG.ClaimHolder.abi,
+      patientDID
+    );
 
-      const patientDIDOwner = await patient.methods.owner().call();
+    const patientDIDOwner = await patient.methods.owner().call();
 
-      let tokenId = await this.ddr.methods.balanceOf(patientDIDOwner).call();
-      let ddrs = Array<any>();
-      for (let i = 0; i < parseInt(tokenId); i++) {
-        let ddr = await this.ddr.methods.getToken(i).call();
-        ddrs.push(ddr);
-      }
-      return ddrs;
-    } else {
-      let ddrs = Array<any>();
-      for (let i = 0; i < ddrIds.length; i++) {
-        let tokenId = await this.ddr.methods
-          .getTokenIdOfPatientDIDByRawId(patientDID, ddrIds[i])
-          .call();
-        let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
-        ddrs.push(ddr);
-      }
-      return ddrs;
+    let tokenIds = await this.ddr.methods.balanceOf(patientDIDOwner).call();
+    let ddrs = Array<any>();
+    for (let i = 0; i < parseInt(tokenIds.length); i++) {
+      let ddr = await this.ddr.methods.getToken(i).call();
+      ddrs.push(ddr);
     }
+    return ddrs;
   }
 
   public async consentDisclosureDDR(
