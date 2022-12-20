@@ -260,6 +260,28 @@ export class DataIntegrity {
     return rootHashOnChain === rootHashOffChain;
   };
 
+  public checkIntegritySingleProvider = async (
+    providerDID: string,
+    accountID: string,
+    hashClaim: string
+  ) => {
+    const rootHashOnChain = await this.provider.methods
+      .getHashValueProvider(providerDID)
+      .call();
+    const rootHashOffChain = keccak256(
+      this.connection.web3.utils.encodePacked(
+        { value: providerDID, type: "address" },
+        { value: accountID, type: "string" },
+        { value: hashClaim, type: "bytes32" }
+      )
+    );
+    if (rootHashOffChain === rootHashOnChain) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   public checkIntegrityStudy = async (
     rootHashValuesPatient: Array<string>,
     rootHashValuesProvider: Array<string>
@@ -372,28 +394,6 @@ export class DataIntegrity {
     console.log(rootHashOffChain);
 
     return rootHashOnChain === rootHashOffChain;
-  };
-
-  public checkIntegritySingleProvider = async (
-    providerDID: string,
-    accountID: string,
-    hashClaim: string
-  ) => {
-    const rootHashOnChain = await this.provider.methods
-      .getHashValueProvider(providerDID)
-      .call();
-    const rootHashOffChain = keccak256(
-      this.connection.web3.utils.encodePacked(
-        { value: providerDID, type: "address" },
-        { value: accountID, type: "string" },
-        { value: hashClaim, type: "bytes32" }
-      )
-    );
-    if (rootHashOffChain === rootHashOnChain) {
-      return true;
-    } else {
-      return false;
-    }
   };
 
 }

@@ -219,8 +219,8 @@ export class DDR {
     return { receipt, eventLogs };
   }
 
-  public async getDDR(patientDID: string, ddrId: Array<string>) {
-    if (ddrId.length == 0) {
+  public async getDDR(patientDID: string, ddrIds: Array<string>) {
+    if (ddrIds.length == 0) {
       let patient = new this.connection.web3.eth.Contract(
         CONFIG.ClaimHolder.abi,
         patientDID
@@ -235,17 +235,17 @@ export class DDR {
         ddrs.push(ddr);
       }
       return ddrs;
-    } else if (ddrId.length === 1) {
+    } else if (ddrIds.length === 1) {
       let tokenId = await this.ddr.methods
-        .getTokenIdOfPatientDIDByRawId(patientDID, ddrId[0])
+        .getTokenIdOfPatientDIDByRawId(patientDID, ddrIds[0])
         .call();
       let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
       return ddr;
     } else {
       let ddrs = Array<any>();
-      for (let i = 0; i < ddrId.length; i++) {
+      for (let i = 0; i < ddrIds.length; i++) {
         let tokenId = await this.ddr.methods
-          .getTokenIdOfPatientDIDByRawId(patientDID, ddrId[i])
+          .getTokenIdOfPatientDIDByRawId(patientDID, ddrIds[i])
           .call();
         let ddr = await this.ddr.methods.getToken(parseInt(tokenId)).call();
         ddrs.push(ddr);
