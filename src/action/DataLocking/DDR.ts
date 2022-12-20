@@ -227,7 +227,7 @@ export class DDR {
     return ddr;
   }
 
-  public async getAlltDDR(patientDID: string) {
+  public async getAllDDR(patientDID: string) {
     let patient = new this.connection.web3.eth.Contract(
       CONFIG.ClaimHolder.abi,
       patientDID
@@ -237,7 +237,7 @@ export class DDR {
 
     let tokenIds = await this.ddr.methods.balanceOf(patientDIDOwner).call();
     let ddrs = Array<any>();
-    for (let i = 0; i < parseInt(tokenIds.length); i++) {
+    for (let i = 0; i < tokenIds.length; i++) {
       let ddr = await this.ddr.methods.getToken(i).call();
       ddrs.push(ddr);
     }
