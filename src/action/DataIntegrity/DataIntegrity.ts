@@ -94,7 +94,6 @@ export class DataIntegrity {
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
     let consentedDID = await this.ddr.methods.getDIDConsentedOf(parseInt(tokenId)).call();
-    console.log(typeof consentedDID)
     assert(
       consentedDID.length === ddrConsentedTo.length,
       "Consented list length not match"
@@ -387,11 +386,7 @@ export class DataIntegrity {
 
     // Check root
     const rootHashOnChain = await this.pcoStudy.methods.getRootHashPOC().call();
-
     const rootHashOffChain =  queueNode[0].data;
-
-    console.log(rootHashOnChain);
-    console.log(rootHashOffChain);
 
     return rootHashOnChain === rootHashOffChain;
   };
