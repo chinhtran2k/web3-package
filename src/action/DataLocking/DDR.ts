@@ -233,7 +233,7 @@ export class DDR {
       .call();
     let ddrs = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
-      let ddr = await this.ddr.methods.getToken(tokenIds[i]).call();
+      let ddr = await this.ddr.methods.getToken(parseInt(tokenIds[i])).call();
       ddrs.push(ddr);
     }
     return ddrs;
