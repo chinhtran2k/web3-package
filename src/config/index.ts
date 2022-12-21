@@ -1,4 +1,7 @@
 import { AbiItem, AbiInput } from "web3-utils/types";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 interface ICONFIG {
   ClaimHolder: ClaimHolder;
@@ -93,5 +96,5 @@ interface PCO {
 
 import * as jsonConfig from "./config.json";
 
-const CONFIG: ICONFIG = require("./config.json");
+const CONFIG: ICONFIG = require(process.env.CONFIG_PATH || "./config.json");
 export { CONFIG };

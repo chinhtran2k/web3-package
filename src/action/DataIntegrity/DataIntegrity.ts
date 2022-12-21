@@ -34,7 +34,7 @@ export class DataIntegrity {
       CONFIG.Provider.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
-      CONFIG.ClaimHolder.abi,
+      CONFIG.ClaimHolder.abi
     );
     this.pcoStudy = new this.connection.web3.eth.Contract(
       CONFIG.POCStudy.abi,
@@ -93,7 +93,9 @@ export class DataIntegrity {
     let tokenId = await this.ddr.methods
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
-    let consentedDID = await this.ddr.methods.getDIDConsentedOf(parseInt(tokenId)).call();
+    let consentedDID = await this.ddr.methods
+      .getDIDConsentedOf(parseInt(tokenId))
+      .call();
     assert(
       consentedDID.length === ddrConsentedTo.length,
       "Consented list length not match"
@@ -383,9 +385,8 @@ export class DataIntegrity {
 
     // Check root
     const rootHashOnChain = await this.pcoStudy.methods.getRootHashPOC().call();
-    const rootHashOffChain =  queueNode[0].data;
+    const rootHashOffChain = queueNode[0].data;
 
     return rootHashOnChain === rootHashOffChain;
   };
-
 }

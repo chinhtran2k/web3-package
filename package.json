@@ -1,6 +1,6 @@
 {
   "name": "@hpa3-blockchain/data-integrity",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,6 +23,7 @@
     "@walletconnect/web3-provider": "^1.8.0",
     "abi-decoder": "^2.4.0",
     "abi-parser-pack": "^1.0.0",
+    "dotenv": "^16.0.3",
     "js-to-ts-converter": "^0.18.2",
     "keccak256": "^1.0.6",
     "web3": "^1.8.1",
