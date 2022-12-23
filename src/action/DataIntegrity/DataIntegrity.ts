@@ -34,7 +34,7 @@ export class DataIntegrity {
       CONFIG.Provider.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
-      CONFIG.ClaimHolder.abi
+      CONFIG.ClaimHolder.abi,
     );
     this.pcoStudy = new this.connection.web3.eth.Contract(
       CONFIG.POCStudy.abi,
@@ -93,9 +93,7 @@ export class DataIntegrity {
     let tokenId = await this.ddr.methods
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
-    let consentedDID = await this.ddr.methods
-      .getDIDConsentedOf(parseInt(tokenId))
-      .call();
+    let consentedDID = await this.ddr.methods.getDIDConsentedOf(parseInt(tokenId)).call();
     assert(
       consentedDID.length === ddrConsentedTo.length,
       "Consented list length not match"
@@ -117,6 +115,7 @@ export class DataIntegrity {
   };
 
   public checkIntegritySinglePatient = async (
+    tokenId: string,
     patientDID: string,
     hashClaim: string,
     ddrsRawId: Array<string>,
@@ -251,7 +250,8 @@ export class DataIntegrity {
       this.connection.web3.utils.encodePacked(
         { value: patientDID, type: "address" },
         { value: queueNode[0].data, type: "bytes32" },
-        { value: hashClaim, type: "bytes32" }
+        { value: hashClaim, type: "bytes32" },
+        { value: tokenId, type: "uint256"}
       )
     );
 
@@ -259,6 +259,7 @@ export class DataIntegrity {
   };
 
   public checkIntegritySingleProvider = async (
+    tokenId: string,
     providerDID: string,
     accountID: string,
     hashClaim: string
@@ -270,7 +271,8 @@ export class DataIntegrity {
       this.connection.web3.utils.encodePacked(
         { value: providerDID, type: "address" },
         { value: accountID, type: "string" },
-        { value: hashClaim, type: "bytes32" }
+        { value: hashClaim, type: "bytes32" },
+        { value: tokenId, type: "uint256"}
       )
     );
     if (rootHashOffChain === rootHashOnChain) {
@@ -385,8 +387,9 @@ export class DataIntegrity {
 
     // Check root
     const rootHashOnChain = await this.pcoStudy.methods.getRootHashPOC().call();
-    const rootHashOffChain = queueNode[0].data;
+    const rootHashOffChain =  queueNode[0].data;
 
     return rootHashOnChain === rootHashOffChain;
   };
+
 }
