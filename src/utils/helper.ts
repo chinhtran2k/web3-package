@@ -123,7 +123,12 @@ const getTransactionReceiptMined = (
   });
 };
 
+const checkIsContract = async (connection: Connection, address: string) => {
+  let code = await connection.web3.eth.getCode(address);
+  return code !== "0x";
+};
+
 const soliditySha3 = (connection: Connection, data: any) =>
   connection.web3.utils.soliditySha3(data) || "";
 
-export { signAndSendTransaction, soliditySha3 };
+export { signAndSendTransaction, checkIsContract, soliditySha3 };

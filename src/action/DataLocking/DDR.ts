@@ -1,4 +1,5 @@
 import { CONFIG } from "../../config";
+import { PreDefinedClaimKeys } from "../../types";
 import { Connection } from "../../utils";
 import { Contract } from "web3-eth-contract/types";
 import { signAndSendTransaction } from "../../utils";
@@ -70,10 +71,9 @@ export class DDR {
       (log: any) => log.name === "MintedDDR"
     );
 
-    if(eventMintDDR.length == 0){
-      return Error("ddrRawId already exists!");
-    }
-    else{
+    if (eventMintDDR.length == 0) {
+      return Error("Execution failed!");
+    } else {
       let tokenId = eventMintDDR[0].events.tokenId;
       let hashValue = eventMintDDR[0].events.hashValue;
       let ddrs = Array<any>();
@@ -84,7 +84,7 @@ export class DDR {
         hashValue: hashValue,
       });
       return { receipt, eventLogs, ddrs };
-  }
+    }
   }
 
   public async mintBatchDDR(
@@ -127,24 +127,23 @@ export class DDR {
     const eventMintDDR = await decodedLogsCL.filter(
       (log: any) => log.name === "MintedBatchDDR"
     );
-    if(eventMintDDR.length == 0){
-      return Error("ddrRawId already exists!");
+    if (eventMintDDR.length == 0) {
+      return Error("Execution failed!");
+    } else {
+      let tokenId = eventMintDDR[0].events.tokenIds;
+      let ddrRawId = ddrRawIds;
+      let hashValue = eventMintDDR[0].events.hashValues;
+      let ddrs = Array<any>();
+      for (let i = 0; i < tokenId.length; i++) {
+        ddrs.push({
+          tokenId: tokenId[i],
+          patientDID: patientDID,
+          ddrRawId: ddrRawId[i],
+          hashValue: hashValue[i],
+        });
+      }
+      return { receipt, eventLogs, ddrs };
     }
-    else{
-    let tokenId = eventMintDDR[0].events.tokenIds;
-    let ddrRawId = ddrRawIds;
-    let hashValue = eventMintDDR[0].events.hashValues;
-    let ddrs = Array<any>();
-    for (let i = 0; i < tokenId.length; i++) {
-      ddrs.push({
-        tokenId: tokenId[i],
-        patientDID: patientDID,
-        ddrRawId: ddrRawId[i],
-        hashValue: hashValue[i],
-      });
-    }
-    return { receipt, eventLogs, ddrs };
-  }
   }
 
   public async setERC20Proxy(
@@ -254,6 +253,15 @@ export class DDR {
     addressOfDelegateKey: string,
     nonce?: number
   ) {
+    try {
+      // check valid providerDID
+      let isValidProviderDID = await this.authenticator.methods
+        .checkAuth(providerDID, "ACCOUNT_TYPE", "PROVIDER")
+        .call();
+    } catch (error) {
+      return Error("Invalid providerDID!");
+    }
+
     // add nonce if not exist
     if (!nonce) {
       var nonce = await this.connection.web3.eth.getTransactionCount(
