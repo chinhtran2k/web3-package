@@ -70,16 +70,21 @@ export class DDR {
       (log: any) => log.name === "MintedDDR"
     );
 
-    let tokenId = eventMintDDR[0].events.tokenId;
-    let hashValue = eventMintDDR[0].events.hashValue;
-    let ddrs = Array<any>();
-    ddrs.push({
-      tokenId: tokenId,
-      patientDID: patientDID,
-      ddrRawId: ddrRawId,
-      hashValue: hashValue,
-    });
-    return { receipt, eventLogs, ddrs };
+    if(eventMintDDR.length == 0){
+      return Error("ddrRawId already exists!");
+    }
+    else{
+      let tokenId = eventMintDDR[0].events.tokenId;
+      let hashValue = eventMintDDR[0].events.hashValue;
+      let ddrs = Array<any>();
+      ddrs.push({
+        tokenId: tokenId,
+        patientDID: patientDID,
+        ddrRawId: ddrRawId,
+        hashValue: hashValue,
+      });
+      return { receipt, eventLogs, ddrs };
+  }
   }
 
   public async mintBatchDDR(
@@ -122,7 +127,10 @@ export class DDR {
     const eventMintDDR = await decodedLogsCL.filter(
       (log: any) => log.name === "MintedBatchDDR"
     );
-
+    if(eventMintDDR.length == 0){
+      return Error("ddrRawId already exists!");
+    }
+    else{
     let tokenId = eventMintDDR[0].events.tokenIds;
     let ddrRawId = ddrRawIds;
     let hashValue = eventMintDDR[0].events.hashValues;
@@ -135,8 +143,8 @@ export class DDR {
         hashValue: hashValue[i],
       });
     }
-
     return { receipt, eventLogs, ddrs };
+  }
   }
 
   public async setERC20Proxy(
