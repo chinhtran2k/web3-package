@@ -74,6 +74,8 @@ export class Patient {
     return listRootHashValue;
   }
 
+  
+
   public async getListAddressPatient() {
     var listRootHashValue = this.patient.methods.getListAddressPatient().call();
     return listRootHashValue;

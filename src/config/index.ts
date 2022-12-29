@@ -10,8 +10,9 @@ interface ICONFIG {
   Authenticator: Authenticator;
   AuthenticatorHelper: AuthenticatorHelper;
   DDR: DDR;
+  DDRBranch: DDRBranch;
+  DisclosureBranch: DisclosureBranch;
   Patient: Patient;
-  Provider: Provider;
   POCStudy: POCStudy;
   ERC20Proxy: ERC20Proxy;
   PCO: PCO;
@@ -59,14 +60,21 @@ interface DDR {
   contractName: string;
 }
 
-interface Patient {
+interface DDRBranch {
   address: string;
   abi: AbiItem[];
   bytecode: string;
   contractName: string;
 }
 
-interface Provider {
+interface DisclosureBranch {
+  address: string;
+  abi: AbiItem[];
+  bytecode: string;
+  contractName: string;
+}
+
+interface Patient {
   address: string;
   abi: AbiItem[];
   bytecode: string;

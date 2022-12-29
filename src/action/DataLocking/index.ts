@@ -1,4 +1,5 @@
 export * from "./DDR";
 export * from "./Patient";
-export * from "./Provider";
+export * from "./DDRBranch";
+export * from "./DisclosureBranch";
 export * from "./POCStudy";

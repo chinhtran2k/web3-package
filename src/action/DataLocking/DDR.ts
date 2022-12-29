@@ -28,7 +28,7 @@ export class DDR {
 
   public async mintDDR(
     hashedData: string,
-    ddrRawId: string,
+    ddrsId: string,
     uri: string,
     patientDID: string,
     privateKey: string,
@@ -42,12 +42,9 @@ export class DDR {
         account.address
       );
     }
-    var nonce = await this.connection.web3.eth.getTransactionCount(
-      account.address
-    );
 
     var mintAbi = await this.ddr.methods
-      .mint(hashedData, ddrRawId, uri, patientDID)
+      .mint(hashedData, ddrsId, uri, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
@@ -80,7 +77,7 @@ export class DDR {
       ddrs.push({
         tokenId: tokenId,
         patientDID: patientDID,
-        ddrRawId: ddrRawId,
+        ddrsId: ddrsId,
         hashValue: hashValue,
       });
       return { receipt, eventLogs, ddrs };
@@ -89,7 +86,7 @@ export class DDR {
 
   public async mintBatchDDR(
     hashDatas: any[],
-    ddrRawIds: string[],
+    ddrsIds: string[],
     uris: string[],
     patientDID: string,
     privateKey: string,
@@ -105,7 +102,7 @@ export class DDR {
     }
 
     var mintBatchAbi = this.ddr.methods
-      .mintBatch(hashDatas, ddrRawIds, uris, patientDID)
+      .mintBatch(hashDatas, ddrsIds, uris, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
@@ -131,14 +128,14 @@ export class DDR {
       return Error("Execution failed!");
     } else {
       let tokenId = eventMintDDR[0].events.tokenIds;
-      let ddrRawId = ddrRawIds;
+      let ddrsId = ddrsIds;
       let hashValue = eventMintDDR[0].events.hashValues;
       let ddrs = Array<any>();
       for (let i = 0; i < tokenId.length; i++) {
         ddrs.push({
           tokenId: tokenId[i],
           patientDID: patientDID,
-          ddrRawId: ddrRawId[i],
+          ddrsId: ddrsId[i],
           hashValue: hashValue[i],
         });
       }
@@ -338,5 +335,19 @@ export class DDR {
     );
     var isLockedDDR = this.ddr.methods.isLockedDDR(ddrTokenId).call();
     return isLockedDDR;
+  }
+
+  public async getAllDisclosureOfProvider(patientDID: string, providerDID: string) {
+    let tokenIds = await this.ddr.methods.getListDDRTokenIdOfProvider(
+      patientDID,
+      providerDID
+    ).call();
+    
+    let disclosureDDR = Array<any>();
+    for (let i = 0; i < tokenIds.length; i++) {
+      let hashvalue = await this.ddr.methods.getDDRHash(parseInt(tokenIds[i])).call();
+      disclosureDDR.push(hashvalue);
+    }
+    return disclosureDDR;
   }
 }
