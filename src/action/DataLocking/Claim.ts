@@ -20,7 +20,7 @@ export class Claim {
     );
   }
   public async mintClaim(
-    claimDID: string,
+    accountDID: string,
     accountId: string,
     uri: string,
     privateKey: string,
@@ -35,7 +35,7 @@ export class Claim {
       );
     }
 
-    var mintAbi = this.claim.methods.mint(claimDID, accountId, uri).encodeABI();
+    var mintAbi = this.claim.methods.mint(accountDID, accountId, uri).encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
@@ -56,16 +56,16 @@ export class Claim {
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
-  public async getHashDataClaim(claimDID: string){
+  public async getHashDataClaim(accountDID: string){
     var hashClaim = this.claim.methods
-      .getHashClaim(claimDID)
+      .getHashClaim(accountDID)
       .call();
     return hashClaim;
   }
 
-  public async getHashValueClaim(claimDID: string) {
+  public async getHashValueClaim(accountDID: string) {
     var claimRootHashValue = this.claim.methods
-      .getHashValueClaim(claimDID)
+      .getHashValueClaim(accountDID)
       .call();
     return claimRootHashValue;
   }

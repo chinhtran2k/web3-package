@@ -111,14 +111,14 @@ export class DataIntegrity {
   };
 
   public checkIntegritySingleClaim = async (
-    claimDID: string,
+    accountDID: string,
     tokenId: string,
     accountId: string,
     hashedDataClaim: string,
   ) => {
     const ddrHashOffChain = keccak256(
       await this.connection.web3.utils.encodePacked(
-        { value: claimDID, type: "address" },
+        { value: accountDID, type: "address" },
         { value: accountId, type: "string" },
         { value: hashedDataClaim, type: "bytes32" },
         { value: tokenId, type: "uint256" }
@@ -126,7 +126,7 @@ export class DataIntegrity {
     );
 
     const hashValueOnChain = await this.claim.methods
-      .getHashValueClaim(claimDID)
+      .getHashValueClaim(accountDID)
       .call();
     if (ddrHashOffChain === hashValueOnChain) {
       return true;
