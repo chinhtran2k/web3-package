@@ -381,7 +381,7 @@ export class DataIntegrity {
     tokenId: string,
     patientDID: string,
     hashClaim: string,
-    ddrBranchHash: Array<string>,
+    ddrBranchHashs: Array<string>,
     disclosureBranchHashs: Array<string>,
   ) => {
     let queueNode: Array<any> = [];
@@ -392,7 +392,7 @@ export class DataIntegrity {
       .call();
 
     assert(
-      ddrBranchHash.length == listDDRBranch.length,
+      ddrBranchHashs.length == listDDRBranch.length,
       "Hashed data of patient length does not match!"
     );
 
@@ -407,13 +407,13 @@ export class DataIntegrity {
 
 
     let listHashValue = new Array<string>(
-      ddrBranchHash.length + disclosureBranchHashs.length
+      ddrBranchHashs.length + disclosureBranchHashs.length
     );
-    for (let i = 0; i < ddrBranchHash.length; i++) {
-      listHashValue[i] = ddrBranchHash[i];
+    for (let i = 0; i < ddrBranchHashs.length; i++) {
+      listHashValue[i] = ddrBranchHashs[i];
     }
     for (let i = 0; i < disclosureBranchHashs.length; i++) {
-      listHashValue[i + ddrBranchHash.length] =
+      listHashValue[i + ddrBranchHashs.length] =
       disclosureBranchHashs[i];
     }
 
