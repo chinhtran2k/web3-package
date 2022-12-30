@@ -28,7 +28,7 @@ export class DDR {
 
   public async mintDDR(
     hashedData: string,
-    ddrsId: string,
+    ddrId: string,
     uri: string,
     patientDID: string,
     privateKey: string,
@@ -44,7 +44,7 @@ export class DDR {
     }
 
     var mintAbi = await this.ddr.methods
-      .mint(hashedData, ddrsId, uri, patientDID)
+      .mint(hashedData, ddrId, uri, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
@@ -77,7 +77,7 @@ export class DDR {
       ddrs.push({
         tokenId: tokenId,
         patientDID: patientDID,
-        ddrsId: ddrsId,
+        ddrId: ddrId,
         hashValue: hashValue,
       });
       return { receipt, eventLogs, ddrs };
@@ -128,14 +128,14 @@ export class DDR {
       return Error("Execution failed!");
     } else {
       let tokenId = eventMintDDR[0].events.tokenIds;
-      let ddrsId = ddrsIds;
+      let ddrId = ddrsIds;
       let hashValue = eventMintDDR[0].events.hashValues;
       let ddrs = Array<any>();
       for (let i = 0; i < tokenId.length; i++) {
         ddrs.push({
           tokenId: tokenId[i],
           patientDID: patientDID,
-          ddrsId: ddrsId[i],
+          ddrId: ddrId[i],
           hashValue: hashValue[i],
         });
       }

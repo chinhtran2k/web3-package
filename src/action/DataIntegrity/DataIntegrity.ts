@@ -9,6 +9,7 @@ const assert = require("assert");
 export class DataIntegrity {
   private connection: Connection;
   private ddr: Contract;
+  private claim: Contract;
   private claimHolder: Contract;
   private authenticator: any;
   private ddrBranch: Contract;
@@ -25,6 +26,10 @@ export class DataIntegrity {
     this.ddr = new this.connection.web3.eth.Contract(
       CONFIG.DDR.abi,
       CONFIG.DDR.address
+    );
+    this.claim = new this.connection.web3.eth.Contract(
+      CONFIG.Claim.abi,
+      CONFIG.Claim.address
     );
     this.patient = new this.connection.web3.eth.Contract(
       CONFIG.Patient.abi,
@@ -99,6 +104,31 @@ export class DataIntegrity {
       .getDDRHashOfPatientDIDByRawId(patientDID, ddrId)
       .call();
     if (ddrHashValue === ddrHashLocal) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  public checkIntegritySingleClaim = async (
+    claimDID: string,
+    tokenId: string,
+    accountId: string,
+    hashedDataClaim: string,
+  ) => {
+    const ddrHashOffChain = keccak256(
+      await this.connection.web3.utils.encodePacked(
+        { value: claimDID, type: "address" },
+        { value: accountId, type: "string" },
+        { value: hashedDataClaim, type: "bytes32" },
+        { value: tokenId, type: "uint256" }
+      )
+    );
+
+    const hashValueOnChain = await this.claim.methods
+      .getHashValueClaim(claimDID)
+      .call();
+    if (ddrHashOffChain === hashValueOnChain) {
       return true;
     } else {
       return false;

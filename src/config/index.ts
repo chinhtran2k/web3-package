@@ -10,6 +10,7 @@ interface ICONFIG {
   Authenticator: Authenticator;
   AuthenticatorHelper: AuthenticatorHelper;
   DDR: DDR;
+  Claim: Claim;
   DDRBranch: DDRBranch;
   DisclosureBranch: DisclosureBranch;
   Patient: Patient;
@@ -60,6 +61,12 @@ interface DDR {
   contractName: string;
 }
 
+interface Claim {
+  address: string;
+  abi: AbiItem[];
+  bytecode: string;
+  contractName: string;
+}
 interface DDRBranch {
   address: string;
   abi: AbiItem[];
