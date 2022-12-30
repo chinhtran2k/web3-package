@@ -75,16 +75,9 @@ export class DataIntegrity {
   public checkIntegritySingleDDR = async (
     patientDID: string,
     ddrId: string,
-    hashedData: string,
+    hashedValue: string,
     ddrConsentedTo: Array<string>
   ) => {
-    const ddrHashLocal = keccak256(
-      await this.connection.web3.utils.encodePacked(
-        { value: patientDID, type: "address" },
-        { value: ddrId, type: "string" },
-        { value: hashedData, type: "bytes32" }
-      )
-    );
 
     let tokenId = await this.ddr.methods
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
@@ -103,7 +96,7 @@ export class DataIntegrity {
     const ddrHashValue = await this.ddr.methods
       .getDDRHashOfPatientDIDByRawId(patientDID, ddrId)
       .call();
-    if (ddrHashValue === ddrHashLocal) {
+    if (ddrHashValue === hashedValue) {
       return true;
     } else {
       return false;
@@ -137,13 +130,13 @@ export class DataIntegrity {
     tokenId: string,
     patientDID: string,
     ddrsId: Array<string>,
-    ddrsHashedData: Array<string>,
+    ddrshashedValue: Array<string>,
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
 
     let ddrHashValue: Array<string> = [];
-    assert(ddrsId.length === ddrsHashedData.length, "Length not match");
+    assert(ddrsId.length === ddrshashedValue.length, "Length not match");
 
     for (let i = 0; i < ddrsId.length; i++) {
       ddrHashValue.push(
@@ -151,7 +144,7 @@ export class DataIntegrity {
           this.connection.web3.utils.encodePacked(
             { value: patientDID, type: "address" },
             { value: ddrsId[i], type: "string" },
-            { value: ddrsHashedData[i], type: "bytes32" }
+            { value: ddrshashedValue[i], type: "bytes32" }
           )
         )
       );
@@ -163,7 +156,7 @@ export class DataIntegrity {
     let listDDRLength = listDDROfPatient.length;
 
     assert(
-      listDDRLength == ddrsHashedData.length,
+      listDDRLength == ddrshashedValue.length,
       "Hashed data length does not match!"
     );
 
@@ -259,13 +252,13 @@ export class DataIntegrity {
     patientDID: string,
     providerDID: string,
     ddrsId: Array<string>,
-    ddrsHashedData: Array<string>,
+    ddrshashedValue: Array<string>,
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
 
     let ddrHashValue: Array<string> = [];
-    assert(ddrsId.length === ddrsHashedData.length, "Length not match");
+    assert(ddrsId.length === ddrshashedValue.length, "Length not match");
 
     for (let i = 0; i < ddrsId.length; i++) {
       ddrHashValue.push(
@@ -273,7 +266,7 @@ export class DataIntegrity {
           this.connection.web3.utils.encodePacked(
             { value: patientDID, type: "address" },
             { value: ddrsId[i], type: "string" },
-            { value: ddrsHashedData[i], type: "bytes32" }
+            { value: ddrshashedValue[i], type: "bytes32" }
           )
         )
       );
@@ -284,7 +277,7 @@ export class DataIntegrity {
       .call();
     let listDDRLength = listDDROfProvider.length;
     assert(
-      listDDRLength == ddrsHashedData.length,
+      listDDRLength == ddrshashedValue.length,
       "Hashed data length does not match!"
     );
 

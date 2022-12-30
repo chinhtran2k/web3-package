@@ -27,7 +27,7 @@ export class DDR {
   }
 
   public async mintDDR(
-    hashedData: string,
+    hashedValue: string,
     ddrId: string,
     uri: string,
     patientDID: string,
@@ -44,7 +44,7 @@ export class DDR {
     }
 
     var mintAbi = await this.ddr.methods
-      .mint(hashedData, ddrId, uri, patientDID)
+      .mint(hashedValue, ddrId, uri, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
@@ -72,14 +72,12 @@ export class DDR {
       return Error("Execution failed!");
     } else {
       let tokenId = eventMintDDR[0].events.tokenId;
-      let hashData = eventMintDDR[0].events.hashedData;
       let hashValue = eventMintDDR[0].events.hashValue;
       let ddrs = Array<any>();
       ddrs.push({
         tokenId: tokenId,
         patientDID: patientDID,
         ddrId: ddrId,
-        hashData: hashData,
         hashValue: hashValue,
       });
       return { receipt, eventLogs, ddrs };
@@ -87,7 +85,7 @@ export class DDR {
   }
 
   public async mintBatchDDR(
-    hashDatas: any[],
+    hashedValues: any[],
     ddrsIds: string[],
     uris: string[],
     patientDID: string,
@@ -104,7 +102,7 @@ export class DDR {
     }
 
     var mintBatchAbi = this.ddr.methods
-      .mintBatch(hashDatas, ddrsIds, uris, patientDID)
+      .mintBatch(hashedValues, ddrsIds, uris, patientDID)
       .encodeABI();
     var executeAbi = this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
@@ -131,16 +129,14 @@ export class DDR {
     } else {
       let tokenId = eventMintDDR[0].events.tokenIds;
       let ddrId = ddrsIds;
-      let hashData = eventMintDDR[0].events.hashedDatas;
-      let hashValue = eventMintDDR[0].events.hashValues;
+      let hashValues = eventMintDDR[0].events.hashValues;
       let ddrs = Array<any>();
       for (let i = 0; i < tokenId.length; i++) {
         ddrs.push({
           tokenId: tokenId[i],
           patientDID: patientDID,
           ddrId: ddrId[i],
-          hashData: hashData[i],
-          hashValue: hashValue[i],
+          hashedValue: hashValues[i],
         });
       }
       return { receipt, eventLogs, ddrs };
