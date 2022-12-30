@@ -112,7 +112,6 @@ export class DataIntegrity {
 
   public checkIntegritySingleClaim = async (
     accountDID: string,
-    tokenId: string,
     accountId: string,
     hashedDataClaim: string,
   ) => {
@@ -121,7 +120,6 @@ export class DataIntegrity {
         { value: accountDID, type: "address" },
         { value: accountId, type: "string" },
         { value: hashedDataClaim, type: "bytes32" },
-        { value: tokenId, type: "uint256" }
       )
     );
 
