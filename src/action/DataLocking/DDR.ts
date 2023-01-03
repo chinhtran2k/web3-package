@@ -69,7 +69,7 @@ export class DDR {
     );
 
     if (eventMintDDR.length == 0) {
-      return Error("Execution failed!");
+      throw Error("Execution failed!");
     } else {
       let tokenId = eventMintDDR[0].events.tokenId;
       let hashValue = eventMintDDR[0].events.hashValue;
@@ -125,7 +125,7 @@ export class DDR {
       (log: any) => log.name === "MintedBatchDDR"
     );
     if (eventMintDDR.length == 0) {
-      return Error("Execution failed!");
+      throw Error("Execution failed!");
     } else {
       let tokenId = eventMintDDR[0].events.tokenIds;
       let ddrId = ddrsIds;
@@ -256,7 +256,7 @@ export class DDR {
         .checkAuth(providerDID, "ACCOUNT_TYPE", "PROVIDER")
         .call();
     } catch (error) {
-      return Error("Invalid providerDID!");
+      throw Error("Invalid providerDID!");
     }
 
     // add nonce if not exist
