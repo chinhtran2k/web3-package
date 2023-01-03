@@ -44,7 +44,7 @@ export class DataIntegrity {
       CONFIG.DisclosureBranch.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
-      CONFIG.ClaimHolder.abi,
+      CONFIG.ClaimHolder.abi
     );
     this.pcoStudy = new this.connection.web3.eth.Contract(
       CONFIG.POCStudy.abi,
@@ -78,11 +78,12 @@ export class DataIntegrity {
     hashedValue: string,
     ddrConsentedTo: Array<string>
   ) => {
-
     let tokenId = await this.ddr.methods
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
-    let consentedDID = await this.ddr.methods.getDIDConsentedOf(parseInt(tokenId)).call();
+    let consentedDID = await this.ddr.methods
+      .getDIDConsentedOf(parseInt(tokenId))
+      .call();
     assert(
       consentedDID.length === ddrConsentedTo.length,
       "Consented list length not match"
@@ -106,13 +107,13 @@ export class DataIntegrity {
   public checkIntegritySingleClaim = async (
     accountDID: string,
     accountId: string,
-    hashedDataClaim: string,
+    hashedDataClaim: string
   ) => {
     const ddrHashOffChain = keccak256(
       await this.connection.web3.utils.encodePacked(
         { value: accountDID, type: "address" },
         { value: accountId, type: "string" },
-        { value: hashedDataClaim, type: "bytes32" },
+        { value: hashedDataClaim, type: "bytes32" }
       )
     );
 
@@ -130,7 +131,7 @@ export class DataIntegrity {
     tokenId: string,
     patientDID: string,
     ddrsId: Array<string>,
-    ddrshashedValue: Array<string>,
+    ddrshashedValue: Array<string>
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
@@ -181,7 +182,6 @@ export class DataIntegrity {
 
     // Init bottom level
     for (let i = 0; i < listDDRLength; i++) {
-
       let merkleNodeTemp = new BinarySearchTreeNode(
         ddrHashValue[i],
         null,
@@ -240,7 +240,7 @@ export class DataIntegrity {
       this.connection.web3.utils.encodePacked(
         { value: patientDID, type: "address" },
         { value: queueNode[0].data, type: "bytes32" },
-        { value: tokenId, type: "uint256"}
+        { value: tokenId, type: "uint256" }
       )
     );
 
@@ -252,7 +252,7 @@ export class DataIntegrity {
     patientDID: string,
     providerDID: string,
     ddrsId: Array<string>,
-    ddrshashedValue: Array<string>,
+    ddrshashedValue: Array<string>
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
@@ -302,7 +302,6 @@ export class DataIntegrity {
 
     // Init bottom level
     for (let i = 0; i < listDDRLength; i++) {
-
       let merkleNodeTemp = new BinarySearchTreeNode(
         ddrHashValue[i],
         null,
@@ -360,11 +359,11 @@ export class DataIntegrity {
       this.connection.web3.utils.encodePacked(
         { value: providerDID, type: "address" },
         { value: queueNode[0].data, type: "bytes32" },
-        { value: tokenId, type: "uint256"}
+        { value: tokenId, type: "uint256" }
       )
     );
-    console.log(rootHashOnChain)
-    console.log(rootHashOffChain)
+    console.log(rootHashOnChain);
+    console.log(rootHashOffChain);
     return rootHashOnChain === rootHashOffChain;
   };
 
@@ -373,7 +372,7 @@ export class DataIntegrity {
     patientDID: string,
     hashClaim: string,
     ddrBranchHashs: Array<string>,
-    disclosureBranchHashs: Array<string>,
+    disclosureBranchHashs: Array<string>
   ) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
@@ -396,7 +395,6 @@ export class DataIntegrity {
       "Hashed data of provider length does not match!"
     );
 
-
     let listHashValue = new Array<string>(
       ddrBranchHashs.length + disclosureBranchHashs.length
     );
@@ -404,8 +402,7 @@ export class DataIntegrity {
       listHashValue[i] = ddrBranchHashs[i];
     }
     for (let i = 0; i < disclosureBranchHashs.length; i++) {
-      listHashValue[i + ddrBranchHashs.length] =
-      disclosureBranchHashs[i];
+      listHashValue[i + ddrBranchHashs.length] = disclosureBranchHashs[i];
     }
 
     let listLevelRootHashLength = listHashValue.length;
@@ -476,24 +473,24 @@ export class DataIntegrity {
     }
 
     // Check root
-    const rootHashOnChain = await this.patient.methods.getPatientRootHashValue(patientDID).call();
+    const rootHashOnChain = await this.patient.methods
+      .getPatientRootHashValue(patientDID)
+      .call();
 
     const rootHashOffChain = keccak256(
       this.connection.web3.utils.encodePacked(
         { value: patientDID, type: "address" },
         { value: queueNode[0].data, type: "bytes32" },
         { value: hashClaim, type: "bytes32" },
-        { value: tokenId, type: "uint256"}
+        { value: tokenId, type: "uint256" }
       )
     );
-    console.log(rootHashOnChain)
-    console.log(rootHashOffChain)
+    console.log(rootHashOnChain);
+    console.log(rootHashOffChain);
     return rootHashOnChain === rootHashOffChain;
   };
 
-  public checkIntegrityStudy = async (
-    rootHashValuesPatient: Array<string>,
-  ) => {
+  public checkIntegrityStudy = async (rootHashValuesPatient: Array<string>) => {
     let queueNode: Array<any> = [];
     let tempNode: Array<any> = [];
 
@@ -519,7 +516,7 @@ export class DataIntegrity {
 
       _tempListLevelRootHash[listLevelRootHashLength - 1] =
         "0x0000000000000000000000000000000000000000000000000000000000000000";
-        rootHashValuesPatient = _tempListLevelRootHash;
+      rootHashValuesPatient = _tempListLevelRootHash;
     }
 
     // Init bottom level
@@ -575,9 +572,8 @@ export class DataIntegrity {
 
     // Check root
     const rootHashOnChain = await this.pcoStudy.methods.getRootHashPOC().call();
-    const rootHashOffChain =  queueNode[0].data;
+    const rootHashOffChain = queueNode[0].data;
 
     return rootHashOnChain === rootHashOffChain;
   };
-
 }

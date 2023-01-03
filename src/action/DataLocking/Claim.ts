@@ -35,7 +35,9 @@ export class Claim {
       );
     }
 
-    var mintAbi = this.claim.methods.mint(accountDID, accountId, uri).encodeABI();
+    var mintAbi = this.claim.methods
+      .mint(accountDID, accountId, uri)
+      .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
@@ -56,10 +58,8 @@ export class Claim {
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
-  public async getHashDataClaim(accountDID: string){
-    var hashClaim = this.claim.methods
-      .getHashClaim(accountDID)
-      .call();
+  public async getHashDataClaim(accountDID: string) {
+    var hashClaim = this.claim.methods.getHashClaim(accountDID).call();
     return hashClaim;
   }
 

@@ -35,7 +35,9 @@ export class DisclosureBranch {
       );
     }
 
-    var mintAbi = this.disclosureDDR.methods.mint(patientDID, providerDID, uri).encodeABI();
+    var mintAbi = this.disclosureDDR.methods
+      .mint(patientDID, providerDID, uri)
+      .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
@@ -45,7 +47,10 @@ export class DisclosureBranch {
       nonce
     );
 
-    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.DisclosureBranch.abi);
+    const decodedLogsCL = await decodeLogs(
+      receipt.logs,
+      CONFIG.DisclosureBranch.abi
+    );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     const eventMintDDR = await decodedLogsCL.filter(
       (log: any) => log.name === "disclosureLockTokenMinted"
@@ -56,37 +61,38 @@ export class DisclosureBranch {
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
-  public async getListRootHashDisclosure(){
+  public async getListRootHashDisclosure() {
     var ListRootHashValue = this.disclosureDDR.methods
       .getListRootHashDisclosure()
       .call();
     return ListRootHashValue;
   }
 
-  public async getListHashDisclosureOfProvider(patientDID: string){
+  public async getListHashDisclosureOfProvider(patientDID: string) {
     var listHashValue = this.disclosureDDR.methods
       .getListHashDisclosureOfProvider(patientDID)
       .call();
     return listHashValue;
   }
 
-  public async getListTokenId(patientDID: string){
+  public async getListTokenId(patientDID: string) {
     var listTokenId = this.disclosureDDR.methods
       .getListTokenId(patientDID)
       .call();
     return listTokenId;
   }
-  
-  public async getAllHashDisclosureBranchOfPatient(patientDID: string){
+
+  public async getAllHashDisclosureBranchOfPatient(patientDID: string) {
     let tokenIds = await this.disclosureDDR.methods
       .getListTokenId(patientDID)
       .call();
     let disclosureBranch = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
-      let hashvalue = await this.disclosureDDR.methods.getTokenIdRootHashDisclosure(parseInt(tokenIds[i])).call();
+      let hashvalue = await this.disclosureDDR.methods
+        .getTokenIdRootHashDisclosure(parseInt(tokenIds[i]))
+        .call();
       disclosureBranch.push(hashvalue);
     }
-    return disclosureBranch
+    return disclosureBranch;
   }
-
 }

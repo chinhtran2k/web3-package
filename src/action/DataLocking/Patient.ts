@@ -55,10 +55,8 @@ export class Patient {
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
-  public async getHashClaim(patientDID: string){
-    var hashClaim = this.patient.methods
-      .getHashClaim(patientDID)
-      .call();
+  public async getHashClaim(patientDID: string) {
+    var hashClaim = this.patient.methods.getHashClaim(patientDID).call();
     return hashClaim;
   }
 
@@ -73,8 +71,6 @@ export class Patient {
     var listRootHashValue = this.patient.methods.getListRootHashValue().call();
     return listRootHashValue;
   }
-
-  
 
   public async getListAddressPatient() {
     var listRootHashValue = this.patient.methods.getListAddressPatient().call();

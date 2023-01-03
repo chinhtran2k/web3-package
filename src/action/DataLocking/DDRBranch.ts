@@ -55,30 +55,27 @@ export class DDRBranch {
     return { receipt, eventLogs, tokenId, hashValue };
   }
 
-  public async getListRootHashDDR(){
-    var ListRootHashValue = this.ddrBranch.methods
-      .getListRootHashDDR()
-      .call();
+  public async getListRootHashDDR() {
+    var ListRootHashValue = this.ddrBranch.methods.getListRootHashDDR().call();
     return ListRootHashValue;
   }
 
-  public async getAllHashDDROfPatient(patientDID: string){
+  public async getAllHashDDROfPatient(patientDID: string) {
     let tokenIds = await this.ddrBranch.methods
       .getListTokenId(patientDID)
       .call();
     let ddrBranch = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
-      let hashvalue = await this.ddrBranch.methods.getTokenIdRootHashDDR(parseInt(tokenIds[i])).call();
+      let hashvalue = await this.ddrBranch.methods
+        .getTokenIdRootHashDDR(parseInt(tokenIds[i]))
+        .call();
       ddrBranch.push(hashvalue);
     }
-    return ddrBranch
+    return ddrBranch;
   }
 
-  public async getListTokenId(patientDID: string){
-    var listTokenId = this.ddrBranch.methods
-      .getListTokenId(patientDID)
-      .call();
+  public async getListTokenId(patientDID: string) {
+    var listTokenId = this.ddrBranch.methods.getListTokenId(patientDID).call();
     return listTokenId;
   }
-
 }

@@ -78,7 +78,7 @@ export class DDR {
         tokenId: tokenId,
         patientDID: patientDID,
         ddrId: ddrId,
-        hashValue: hashValue,
+        hashedValue: hashValue,
       });
       return { receipt, eventLogs, ddrs };
     }
