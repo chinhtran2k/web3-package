@@ -46,7 +46,7 @@ export class DDR {
     var mintAbi = await this.ddr.methods
       .mint(hashedValue, ddrId, uri, patientDID)
       .encodeABI();
-    var executeAbi = this.claimHolder.methods
+    var executeAbi = await this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
       .encodeABI();
 
@@ -101,10 +101,10 @@ export class DDR {
       );
     }
 
-    var mintBatchAbi = this.ddr.methods
+    var mintBatchAbi = await this.ddr.methods
       .mintBatch(hashedValues, ddrsIds, uris, patientDID)
       .encodeABI();
-    var executeAbi = this.claimHolder.methods
+    var executeAbi = await this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
       .encodeABI();
 
@@ -157,7 +157,7 @@ export class DDR {
       );
     }
 
-    var mintBatchAbi = this.ddr.methods
+    var mintBatchAbi = await this.ddr.methods
       .setERC20Proxy(addressErc20Proxy)
       .encodeABI();
 
@@ -196,10 +196,10 @@ export class DDR {
       ddrTokenIds.push(ddrTokenId);
     }
 
-    var sharedDDRAbi = this.ddr.methods
+    var sharedDDRAbi = await this.ddr.methods
       .shareDDR(ddrTokenIds, patientDID)
       .encodeABI();
-    var executeAbi = this.claimHolder.methods
+    var executeAbi = await this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, sharedDDRAbi)
       .encodeABI();
 
@@ -275,10 +275,10 @@ export class DDR {
       ddrTokenIds.push(ddrTokenId);
     }
 
-    var lockDDRAbi = this.ddr.methods
+    var lockDDRAbi = await this.ddr.methods
       .consentDisclosureDDR(ddrTokenIds, providerDID)
       .encodeABI();
-    var executeAbi = this.claimHolder.methods
+    var executeAbi = await this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, lockDDRAbi)
       .encodeABI();
 
@@ -302,12 +302,11 @@ export class DDR {
   }
 
   public async getShareDDR(patientDID: string, ddrId: string) {
-    let ddrTokenId = await this.ddr.methods.getTokenIdOfPatientDIDByRawId(
-      patientDID,
-      ddrId
-    );
+    let ddrTokenId = await this.ddr.methods
+      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
+      .call();
 
-    var isSharedDDR = this.ddr.methods
+    var isSharedDDR = await this.ddr.methods
       .isSharedDDR(patientDID, ddrTokenId)
       .call();
     return isSharedDDR;
@@ -318,34 +317,36 @@ export class DDR {
     patientDID: string,
     ddrId: string
   ) {
-    let ddrTokenId = await this.ddr.methods.getTokenIdOfPatientDIDByRawId(
-      patientDID,
-      ddrId
-    );
-    var isConsentedDDR = this.ddr.methods
+    let ddrTokenId = await this.ddr.methods
+      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
+      .call();
+    var isConsentedDDR = await this.ddr.methods
       .isConsentedDDR(providerDID, ddrTokenId)
       .call();
     return isConsentedDDR;
   }
 
   public async getLockedDDR(patientDID: string, ddrId: string) {
-    let ddrTokenId = await this.ddr.methods.getTokenIdOfPatientDIDByRawId(
-      patientDID,
-      ddrId
-    );
-    var isLockedDDR = this.ddr.methods.isLockedDDR(ddrTokenId).call();
+    let ddrTokenId = await this.ddr.methods
+      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
+      .call();
+    var isLockedDDR = await this.ddr.methods.isLockedDDR(ddrTokenId).call();
     return isLockedDDR;
   }
 
-  public async getAllDisclosureOfProvider(patientDID: string, providerDID: string) {
-    let tokenIds = await this.ddr.methods.getListDDRTokenIdOfProvider(
-      patientDID,
-      providerDID
-    ).call();
-    
+  public async getAllDisclosureOfProvider(
+    patientDID: string,
+    providerDID: string
+  ) {
+    let tokenIds = await this.ddr.methods
+      .getListDDRTokenIdOfProvider(patientDID, providerDID)
+      .call();
+
     let disclosureDDR = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
-      let hashvalue = await this.ddr.methods.getDDRHash(parseInt(tokenIds[i])).call();
+      let hashvalue = await this.ddr.methods
+        .getDDRHash(parseInt(tokenIds[i]))
+        .call();
       disclosureDDR.push(hashvalue);
     }
     return disclosureDDR;

@@ -35,7 +35,7 @@ export class Claim {
       );
     }
 
-    var mintAbi = this.claim.methods
+    var mintAbi = await this.claim.methods
       .mint(accountDID, accountId, uri)
       .encodeABI();
 
@@ -59,29 +59,31 @@ export class Claim {
   }
 
   public async getHashDataClaim(accountDID: string) {
-    var hashClaim = this.claim.methods.getHashClaim(accountDID).call();
+    var hashClaim = await this.claim.methods.getHashClaim(accountDID).call();
     return hashClaim;
   }
 
   public async getHashValueClaim(accountDID: string) {
-    var claimRootHashValue = this.claim.methods
+    var claimRootHashValue = await this.claim.methods
       .getHashValueClaim(accountDID)
       .call();
     return claimRootHashValue;
   }
 
   public async getListHashValue() {
-    var listHashValue = this.claim.methods.getListHashValue().call();
+    var listHashValue = await this.claim.methods.getListHashValue().call();
     return listHashValue;
   }
 
   public async getListAddressOfclaim() {
-    var listHashValue = this.claim.methods.getListAddressOfclaim().call();
+    var listHashValue = await this.claim.methods.getListAddressOfclaim().call();
     return listHashValue;
   }
 
   public async getListAddressOfClaim() {
-    var listAddressOfClaim = this.claim.methods.getListAddressOfClaim().call();
+    var listAddressOfClaim = await this.claim.methods
+      .getListAddressOfClaim()
+      .call();
     return listAddressOfClaim;
   }
 }

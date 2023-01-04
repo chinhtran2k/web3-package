@@ -35,7 +35,7 @@ export class DisclosureBranch {
       );
     }
 
-    var mintAbi = this.disclosureDDR.methods
+    var mintAbi = await this.disclosureDDR.methods
       .mint(patientDID, providerDID, uri)
       .encodeABI();
 
@@ -62,21 +62,21 @@ export class DisclosureBranch {
   }
 
   public async getListRootHashDisclosure() {
-    var ListRootHashValue = this.disclosureDDR.methods
+    var ListRootHashValue = await this.disclosureDDR.methods
       .getListRootHashDisclosure()
       .call();
     return ListRootHashValue;
   }
 
   public async getListHashDisclosureOfProvider(patientDID: string) {
-    var listHashValue = this.disclosureDDR.methods
+    var listHashValue = await this.disclosureDDR.methods
       .getListHashDisclosureOfProvider(patientDID)
       .call();
     return listHashValue;
   }
 
   public async getListTokenId(patientDID: string) {
-    var listTokenId = this.disclosureDDR.methods
+    var listTokenId = await this.disclosureDDR.methods
       .getListTokenId(patientDID)
       .call();
     return listTokenId;

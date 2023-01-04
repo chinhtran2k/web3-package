@@ -34,7 +34,9 @@ export class DDRBranch {
       );
     }
 
-    var mintAbi = this.ddrBranch.methods.mint(patientDID, uri).encodeABI();
+    var mintAbi = await this.ddrBranch.methods
+      .mint(patientDID, uri)
+      .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
@@ -56,7 +58,9 @@ export class DDRBranch {
   }
 
   public async getListRootHashDDR() {
-    var ListRootHashValue = this.ddrBranch.methods.getListRootHashDDR().call();
+    var ListRootHashValue = await this.ddrBranch.methods
+      .getListRootHashDDR()
+      .call();
     return ListRootHashValue;
   }
 
@@ -75,7 +79,9 @@ export class DDRBranch {
   }
 
   public async getListTokenId(patientDID: string) {
-    var listTokenId = this.ddrBranch.methods.getListTokenId(patientDID).call();
+    var listTokenId = await this.ddrBranch.methods
+      .getListTokenId(patientDID)
+      .call();
     return listTokenId;
   }
 }

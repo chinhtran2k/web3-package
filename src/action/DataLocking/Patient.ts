@@ -34,7 +34,7 @@ export class Patient {
       );
     }
 
-    var mintAbi = this.patient.methods.mint(patientDID, uri).encodeABI();
+    var mintAbi = await this.patient.methods.mint(patientDID, uri).encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
@@ -56,24 +56,28 @@ export class Patient {
   }
 
   public async getHashClaim(patientDID: string) {
-    var hashClaim = this.patient.methods.getHashClaim(patientDID).call();
+    var hashClaim = await this.patient.methods.getHashClaim(patientDID).call();
     return hashClaim;
   }
 
   public async getPatientRootHashValue(patientDID: string) {
-    var PatientRootHashValue = this.patient.methods
+    var PatientRootHashValue = await this.patient.methods
       .getPatientRootHashValue(patientDID)
       .call();
     return PatientRootHashValue;
   }
 
   public async getListRootHashValue() {
-    var listRootHashValue = this.patient.methods.getListRootHashValue().call();
+    var listRootHashValue = await this.patient.methods
+      .getListRootHashValue()
+      .call();
     return listRootHashValue;
   }
 
   public async getListAddressPatient() {
-    var listRootHashValue = this.patient.methods.getListAddressPatient().call();
+    var listRootHashValue = await this.patient.methods
+      .getListAddressPatient()
+      .call();
     return listRootHashValue;
   }
 }

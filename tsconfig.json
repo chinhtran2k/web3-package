@@ -18,5 +18,12 @@
     "resolveJsonModule": true,
     "moduleResolution": "node"
   },
-  "exclude": ["node_modules", "dist", "src/**/*.spec.ts", "src/test.ts","test.ts", "test.js"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.spec.ts",
+    "src/test.ts",
+    "test.ts",
+    "test.js"
+  ]
 }

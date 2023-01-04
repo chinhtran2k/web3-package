@@ -29,7 +29,7 @@ export class POCStudy {
       );
     }
 
-    var mintAbi = this.pcoStudy.methods.mint(uri, message).encodeABI();
+    var mintAbi = await this.pcoStudy.methods.mint(uri, message).encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
@@ -51,18 +51,23 @@ export class POCStudy {
   }
 
   public async getRootTokenIdPOC() {
-    var RootHashPOCPatient = this.pcoStudy.methods.getRootTokenIdPOC().call();
+    var RootHashPOCPatient = await this.pcoStudy.methods
+      .getRootTokenIdPOC()
+      .call();
     return RootHashPOCPatient;
   }
 
   public async getRootNodeIdPOC() {
-    var RootNodeIdPOCPatient = this.pcoStudy.methods.getRootNodeIdPOC().call();
+    var RootNodeIdPOCPatient = await this.pcoStudy.methods
+      .getRootNodeIdPOC()
+      .call();
     return RootNodeIdPOCPatient;
   }
 
   public async getRootHashPOC() {
-    var RootNodeIdPOCPatient = this.pcoStudy.methods.getRootHashPOC().call();
+    var RootNodeIdPOCPatient = await this.pcoStudy.methods
+      .getRootHashPOC()
+      .call();
     return RootNodeIdPOCPatient;
   }
-  
 }

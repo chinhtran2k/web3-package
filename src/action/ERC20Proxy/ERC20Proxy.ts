@@ -32,7 +32,9 @@ export class ERC20Proxy {
       );
     }
 
-    var abiMint = this.erc20Proxy.methods.setAwardValue(value).encodeABI();
+    var abiMint = await this.erc20Proxy.methods
+      .setAwardValue(value)
+      .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
@@ -62,7 +64,7 @@ export class ERC20Proxy {
       );
     }
 
-    var abiSetTOkenOwner = this.erc20Proxy.methods
+    var abiSetTOkenOwner = await this.erc20Proxy.methods
       .setTokenOwner(tokenOwner)
       .encodeABI();
 
@@ -93,7 +95,7 @@ export class ERC20Proxy {
       );
     }
 
-    var abiSetPCOToken = this.erc20Proxy.methods
+    var abiSetPCOToken = await this.erc20Proxy.methods
       .setPCOToken(pcoAddress)
       .encodeABI();
 
@@ -124,7 +126,7 @@ export class ERC20Proxy {
       );
     }
 
-    var abiSetDDRContract = this.erc20Proxy.methods
+    var abiSetDDRContract = await this.erc20Proxy.methods
       .setDDRContract(ddrAddress)
       .encodeABI();
 
@@ -151,7 +153,9 @@ export class ERC20Proxy {
       );
     }
 
-    var abiAwardToken = this.erc20Proxy.methods.awardToken(to).encodeABI();
+    var abiAwardToken = await this.erc20Proxy.methods
+      .awardToken(to)
+      .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
