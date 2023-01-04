@@ -53,7 +53,7 @@ export class DisclosureBranch {
     );
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     const eventMintDDR = await decodedLogsCL.filter(
-      (log: any) => log.name === "disclosureLockTokenMinted"
+      (log: any) => log.name === "DisclosureLockTokenMinted"
     );
     let tokenId = eventMintDDR[0].events.tokenId;
     let hashValue = eventMintDDR[0].events.newHashValue;

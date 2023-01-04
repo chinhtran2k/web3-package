@@ -50,7 +50,7 @@ export class Claim {
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Claim.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     const eventMintDDR = await decodedLogsCL.filter(
-      (log: any) => log.name === "claimLockTokenMinted"
+      (log: any) => log.name === "ClaimLockTokenMinted"
     );
     let tokenId = eventMintDDR[0].events.tokenId;
     let hashValue = eventMintDDR[0].events.hashValue;
