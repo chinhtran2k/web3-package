@@ -68,10 +68,17 @@ export class Patient {
   }
 
   public async getListRootHashValue() {
-    var listRootHashValue = await this.patient.methods
-      .getListRootHashValue()
+    let listAddress = await this.patient.methods
+      .getListAddressPatient()
       .call();
-    return listRootHashValue;
+    let listPatientLocks = Array<any>();
+    for (let i = 0; i < listAddress.length; i++) {
+      let hashvalue = await this.patient.methods
+        .getPatientRootHashValue(listAddress[i])
+        .call();
+        listPatientLocks.push(hashvalue);
+    }
+    return listPatientLocks;
   }
 
   public async getListAddressPatient() {

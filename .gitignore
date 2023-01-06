@@ -11,5 +11,6 @@ artifacts
 test*
 dist
 test.ts
+signTransaction.ts
 **/test.ts
 src/test.ts
