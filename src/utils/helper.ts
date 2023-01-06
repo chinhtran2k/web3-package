@@ -21,7 +21,8 @@ const signAndSendTransaction = async (
   data: any,
   to: string,
   privateKey: string,
-  nonce?: number
+  nonce?: number,
+  isSimulate?: boolean
 ): Promise<TransactionReceipt> => {
   const web3 = connection.web3;
   const address = web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -43,6 +44,10 @@ const signAndSendTransaction = async (
 
   if (nonce) {
     transactionObject["nonce"] = nonce;
+  }
+
+  if (isSimulate) {
+    simulateCallTransaction(connection, transactionObject);
   }
 
   return new Promise((resolve, reject) => {
@@ -131,4 +136,17 @@ const checkIsContract = async (connection: Connection, address: string) => {
 const soliditySha3 = (connection: Connection, data: any) =>
   connection.web3.utils.soliditySha3(data) || "";
 
-export { signAndSendTransaction, checkIsContract, soliditySha3 };
+const simulateCallTransaction = async (connection: Connection, data: any) => {
+  try {
+    const result = await connection.web3.eth.call(data);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+export {
+  signAndSendTransaction,
+  checkIsContract,
+  soliditySha3,
+  simulateCallTransaction,
+};
