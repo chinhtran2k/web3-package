@@ -24,7 +24,8 @@ export class Claim {
     accountId: string,
     uri: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -44,7 +45,8 @@ export class Claim {
       mintAbi,
       CONFIG.Claim.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Claim.abi);

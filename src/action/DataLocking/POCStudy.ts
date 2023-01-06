@@ -19,7 +19,8 @@ export class POCStudy {
     uri: string,
     message: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -36,7 +37,8 @@ export class POCStudy {
       mintAbi,
       CONFIG.POCStudy.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.POCStudy.abi);

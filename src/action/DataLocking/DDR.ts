@@ -32,7 +32,8 @@ export class DDR {
     uri: string,
     patientDID: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -55,7 +56,8 @@ export class DDR {
       executeAbi,
       CONFIG.ClaimHolder.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     // Decode log for different contract
@@ -90,7 +92,8 @@ export class DDR {
     uris: string[],
     patientDID: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -113,7 +116,8 @@ export class DDR {
       executeAbi,
       CONFIG.ClaimHolder.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(
@@ -146,7 +150,8 @@ export class DDR {
   public async setERC20Proxy(
     addressErc20Proxy: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?:boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -166,7 +171,8 @@ export class DDR {
       mintBatchAbi,
       CONFIG.DDR.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     return receipt;
@@ -176,7 +182,8 @@ export class DDR {
     ddrIds: Array<string>,
     patientDID: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -208,7 +215,8 @@ export class DDR {
       executeAbi,
       CONFIG.ClaimHolder.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     // Decode log for different contract

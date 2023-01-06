@@ -23,7 +23,8 @@ export class DDRBranch {
     patientDID: string,
     uri: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -43,7 +44,8 @@ export class DDRBranch {
       mintAbi,
       CONFIG.DDRBranch.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.DDRBranch.abi);

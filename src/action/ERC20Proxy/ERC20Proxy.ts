@@ -22,7 +22,8 @@ export class ERC20Proxy {
   public async setAwardValue(
     value: number,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -41,7 +42,8 @@ export class ERC20Proxy {
       abiMint,
       CONFIG.ERC20Proxy.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -53,7 +55,8 @@ export class ERC20Proxy {
   public async setTokenOwner(
     tokenOwner: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -73,7 +76,8 @@ export class ERC20Proxy {
       abiSetTOkenOwner,
       CONFIG.ERC20Proxy.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -85,7 +89,8 @@ export class ERC20Proxy {
   public async setPCOToken(
     pcoAddress: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -104,7 +109,8 @@ export class ERC20Proxy {
       abiSetPCOToken,
       CONFIG.ERC20Proxy.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -116,7 +122,8 @@ export class ERC20Proxy {
   public async setDDRContract(
     ddrAddress: string,
     privateKey: string,
-    nonce?: number
+    nonce?: number,
+    isSimulate?: boolean
   ) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
@@ -135,7 +142,8 @@ export class ERC20Proxy {
       abiSetDDRContract,
       CONFIG.ERC20Proxy.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -144,7 +152,7 @@ export class ERC20Proxy {
     return { receipt, eventLogs };
   }
 
-  public async awardToken(to: string, privateKey: string, nonce?: number) {
+  public async awardToken(to: string, privateKey: string, nonce?: number, isSimulate?: boolean) {
     const account =
       this.connection.web3.eth.accounts.privateKeyToAccount(privateKey);
     if (!nonce) {
@@ -162,7 +170,8 @@ export class ERC20Proxy {
       abiAwardToken,
       CONFIG.ERC20Proxy.address,
       privateKey,
-      nonce
+      nonce,
+      isSimulate
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
