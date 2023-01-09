@@ -76,24 +76,7 @@ export class DataIntegrity {
     patientDID: string,
     ddrId: string,
     hashedValue: string,
-    ddrConsentedTo: Array<string>
   ) => {
-    let tokenId = await this.ddr.methods
-      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
-      .call();
-    let consentedDID = await this.ddr.methods
-      .getDIDConsentedOf(parseInt(tokenId))
-      .call();
-    assert(
-      consentedDID.length === ddrConsentedTo.length,
-      "Consented list length not match"
-    );
-    for (let i = 0; i < ddrConsentedTo.length; i++) {
-      if (ddrConsentedTo[i] !== consentedDID[i]) {
-        return false;
-      }
-    }
-
     const ddrHashValue = await this.ddr.methods
       .getDDRHashOfPatientDIDByRawId(patientDID, ddrId)
       .call();
