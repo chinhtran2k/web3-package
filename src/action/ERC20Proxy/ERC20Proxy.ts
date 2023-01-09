@@ -43,7 +43,7 @@ export class ERC20Proxy {
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -77,7 +77,7 @@ export class ERC20Proxy {
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -110,7 +110,7 @@ export class ERC20Proxy {
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -143,7 +143,7 @@ export class ERC20Proxy {
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);
@@ -171,7 +171,7 @@ export class ERC20Proxy {
       CONFIG.ERC20Proxy.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ERC20Proxy.abi);

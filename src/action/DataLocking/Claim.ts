@@ -46,7 +46,7 @@ export class Claim {
       CONFIG.Claim.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Claim.abi);

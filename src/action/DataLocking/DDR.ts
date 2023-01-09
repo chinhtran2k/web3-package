@@ -57,7 +57,7 @@ export class DDR {
       CONFIG.ClaimHolder.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     // Decode log for different contract
@@ -117,7 +117,7 @@ export class DDR {
       CONFIG.ClaimHolder.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(
@@ -172,7 +172,7 @@ export class DDR {
       CONFIG.DDR.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     return receipt;
@@ -216,7 +216,7 @@ export class DDR {
       CONFIG.ClaimHolder.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     // Decode log for different contract

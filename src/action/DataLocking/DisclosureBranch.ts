@@ -46,7 +46,7 @@ export class DisclosureBranch {
       CONFIG.DisclosureBranch.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(

@@ -38,7 +38,7 @@ export class POCStudy {
       CONFIG.POCStudy.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.POCStudy.abi);

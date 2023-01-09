@@ -59,7 +59,7 @@ const signAndSendTransaction = async (
     web3.eth.accounts.signTransaction(
       transactionObject,
       privateKey,
-      async (err, signedTx) => {
+      async (err: any, signedTx: any) => {
         if (err) {
           console.log(
             "-----------nonce-----------",

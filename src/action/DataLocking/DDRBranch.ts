@@ -45,7 +45,7 @@ export class DDRBranch {
       CONFIG.DDRBranch.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.DDRBranch.abi);

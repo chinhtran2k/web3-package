@@ -43,7 +43,7 @@ export class Patient {
       CONFIG.Patient.address,
       privateKey,
       nonce,
-      isSimulate
+      isSimulate!
     );
 
     const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Patient.abi);
