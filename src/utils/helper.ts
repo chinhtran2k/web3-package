@@ -23,7 +23,7 @@ const signAndSendTransaction = async (
   privateKey: string,
   nonce?: number,
   isSimulate?: boolean
-): Promise<TransactionReceipt> => {
+): Promise<any> => {
   const web3 = connection.web3;
   const address = web3.eth.accounts.privateKeyToAccount(privateKey);
   let gas = await web3.eth.estimateGas({
@@ -47,7 +47,12 @@ const signAndSendTransaction = async (
   }
 
   if (isSimulate) {
-    simulateCallTransaction(connection, transactionObject);
+    const simulateData = simulateCallTransaction(connection, transactionObject);
+    if (simulateData) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   return new Promise((resolve, reject) => {
