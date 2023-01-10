@@ -1,5 +1,5 @@
 export * from "./DDR";
-export * from "./Claim";
+export * from "./ClaimBranch";
 export * from "./Patient";
 export * from "./DDRBranch";
 export * from "./DisclosureBranch";
