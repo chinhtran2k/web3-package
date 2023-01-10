@@ -24,6 +24,8 @@
     "src/**/*.spec.ts",
     "src/test.ts",
     "test.ts",
-    "test.js"
+    "test.js",
+    "signTransaction.ts",
+    "signTransaction.js"
   ]
 }

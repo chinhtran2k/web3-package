@@ -91,7 +91,7 @@ export class DisclosureBranch {
     let disclosureBranch = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
       let hashvalue = await this.disclosureDDR.methods
-        .getTokenIdRootHashDisclosure(parseInt(tokenIds[i]))
+        .getRootHashDisclosureOfTokenId(parseInt(tokenIds[i]), patientDID)
         .call();
       disclosureBranch.push(hashvalue);
     }

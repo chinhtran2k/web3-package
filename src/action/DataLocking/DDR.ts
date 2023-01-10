@@ -27,7 +27,7 @@ export class DDR {
   }
 
   public async mintDDR(
-    hashedValue: string,
+    hashValue: string,
     ddrId: string,
     uri: string,
     patientDID: string,
@@ -45,7 +45,7 @@ export class DDR {
     }
 
     var mintAbi = await this.ddr.methods
-      .mint(hashedValue, ddrId, uri, patientDID)
+      .mint(hashValue, ddrId, uri, patientDID)
       .encodeABI();
     var executeAbi = await this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintAbi)
@@ -80,14 +80,14 @@ export class DDR {
         tokenId: tokenId,
         patientDID: patientDID,
         ddrId: ddrId,
-        hashedValue: hashValue,
+        hashValue: hashValue,
       });
       return { receipt, eventLogs, ddrs };
     }
   }
 
   public async mintBatchDDR(
-    hashedValues: any[],
+    hashValues: any[],
     ddrsIds: string[],
     uris: string[],
     patientDID: string,
@@ -105,7 +105,7 @@ export class DDR {
     }
 
     var mintBatchAbi = await this.ddr.methods
-      .mintBatch(hashedValues, ddrsIds, uris, patientDID)
+      .mintBatch(hashValues, ddrsIds, uris, patientDID)
       .encodeABI();
     var executeAbi = await this.claimHolder.methods
       .execute(CONFIG.DDR.address, 0, mintBatchAbi)
@@ -140,7 +140,7 @@ export class DDR {
           tokenId: tokenId[i],
           patientDID: patientDID,
           ddrId: ddrId[i],
-          hashedValue: hashValues[i],
+          hashValue: hashValues[i],
         });
       }
       return { receipt, eventLogs, ddrs };

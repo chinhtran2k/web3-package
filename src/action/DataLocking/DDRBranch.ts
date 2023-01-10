@@ -73,7 +73,7 @@ export class DDRBranch {
     let ddrBranch = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
       let hashvalue = await this.ddrBranch.methods
-        .getTokenIdRootHashDDR(parseInt(tokenIds[i]))
+        .getHashDDRBranchOfTokenId(parseInt(tokenIds[i]), patientDID)
         .call();
       ddrBranch.push(hashvalue);
     }
