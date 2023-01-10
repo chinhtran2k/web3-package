@@ -4,22 +4,22 @@ import { Contract } from "web3-eth-contract/types";
 import { signAndSendTransaction } from "../../utils";
 const { decodeLogs } = require("abi-parser-pack");
 
-export class Claim {
+export class ClaimBranch {
   private connection: Connection;
-  private claim: Contract;
+  private claimBranch: Contract;
   private claimHolder: Contract;
 
   constructor(connection: Connection) {
     this.connection = connection;
-    this.claim = new this.connection.web3.eth.Contract(
-      CONFIG.Claim.abi,
-      CONFIG.Claim.address
+    this.claimBranch = new this.connection.web3.eth.Contract(
+      CONFIG.ClaimBranch.abi,
+      CONFIG.ClaimBranch.address
     );
     this.claimHolder = new this.connection.web3.eth.Contract(
       CONFIG.ClaimHolder.abi
     );
   }
-  public async mintClaim(
+  public async mintClaimBranch(
     accountDID: string,
     accountId: string,
     uri: string,
@@ -36,20 +36,20 @@ export class Claim {
       );
     }
 
-    var mintAbi = await this.claim.methods
+    var mintAbi = await this.claimBranch.methods
       .mint(accountDID, accountId, uri)
       .encodeABI();
 
     const receipt = await signAndSendTransaction(
       this.connection,
       mintAbi,
-      CONFIG.Claim.address,
+      CONFIG.ClaimBranch.address,
       privateKey,
       nonce,
       isSimulate!
     );
 
-    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.Claim.abi);
+    const decodedLogsCL = await decodeLogs(receipt.logs, CONFIG.ClaimBranch.abi);
     let eventLogs = await decodedLogsCL.filter((log: any) => log);
     const eventMintDDR = await decodedLogsCL.filter(
       (log: any) => log.name === "ClaimLockTokenMinted"
@@ -61,29 +61,29 @@ export class Claim {
   }
 
   public async getHashDataClaim(accountDID: string) {
-    var hashClaim = await this.claim.methods.getHashClaim(accountDID).call();
+    var hashClaim = await this.claimBranch.methods.getHashClaim(accountDID).call();
     return hashClaim;
   }
 
   public async getHashValueClaim(accountDID: string) {
-    var claimRootHashValue = await this.claim.methods
+    var claimRootHashValue = await this.claimBranch.methods
       .getHashValueClaim(accountDID)
       .call();
     return claimRootHashValue;
   }
 
   public async getListHashValue() {
-    var listHashValue = await this.claim.methods.getListHashValue().call();
+    var listHashValue = await this.claimBranch.methods.getListHashValue().call();
     return listHashValue;
   }
 
   public async getListAddressOfclaim() {
-    var listHashValue = await this.claim.methods.getListAddressOfclaim().call();
+    var listHashValue = await this.claimBranch.methods.getListAddressOfclaim().call();
     return listHashValue;
   }
 
   public async getListAddressOfClaim() {
-    var listAddressOfClaim = await this.claim.methods
+    var listAddressOfClaim = await this.claimBranch.methods
       .getListAddressOfClaim()
       .call();
     return listAddressOfClaim;

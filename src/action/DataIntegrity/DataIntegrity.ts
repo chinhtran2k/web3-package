@@ -9,7 +9,7 @@ const assert = require("assert");
 export class DataIntegrity {
   private connection: Connection;
   private ddr: Contract;
-  private claim: Contract;
+  private claimBranch: Contract;
   private claimHolder: Contract;
   private authenticator: any;
   private ddrBranch: Contract;
@@ -27,9 +27,9 @@ export class DataIntegrity {
       CONFIG.DDR.abi,
       CONFIG.DDR.address
     );
-    this.claim = new this.connection.web3.eth.Contract(
-      CONFIG.Claim.abi,
-      CONFIG.Claim.address
+    this.claimBranch = new this.connection.web3.eth.Contract(
+      CONFIG.ClaimBranch.abi,
+      CONFIG.ClaimBranch.address
     );
     this.patient = new this.connection.web3.eth.Contract(
       CONFIG.Patient.abi,
@@ -95,7 +95,7 @@ export class DataIntegrity {
     accountDID: string,
     hashClaimBranchOffChain: string
   ) => {
-    const hashClaimBranchOnChain = await this.claim.methods
+    const hashClaimBranchOnChain = await this.claimBranch.methods
       .getHashClaimOfToken(tokenId, accountDID)
       .call();
     if (hashClaimBranchOffChain === hashClaimBranchOnChain) {

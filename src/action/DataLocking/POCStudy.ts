@@ -10,7 +10,7 @@ export class POCStudy {
   private ddr: Contract;
   private ddrBranch: Contract;
   private disclosureBranch: Contract;
-  private claim: Contract;
+  private claimBranch: Contract;
   private patient: Contract;
 
 
@@ -32,9 +32,9 @@ export class POCStudy {
       CONFIG.DisclosureBranch.abi,
       CONFIG.DisclosureBranch.address
     );
-    this.claim = new this.connection.web3.eth.Contract(
-      CONFIG.Claim.abi,
-      CONFIG.Claim.address
+    this.claimBranch = new this.connection.web3.eth.Contract(
+      CONFIG.ClaimBranch.abi,
+      CONFIG.ClaimBranch.address
     );
     this.patient = new this.connection.web3.eth.Contract(
       CONFIG.Patient.abi,
@@ -113,7 +113,7 @@ export class POCStudy {
     }
 
     var permamentDDRAbi = await this.ddr.methods.transferOwnerShip().encodeABI();
-    var permamentClaimAbi = await this.claim.methods.transferOwnerShip().encodeABI();
+    var permamentClaimAbi = await this.claimBranch.methods.transferOwnerShip().encodeABI();
     var permamentDDRBranhAbi = await this.ddrBranch.methods.transferOwnerShip().encodeABI();
     var permamentDisclosureBranhAbi = await this.disclosureBranch.methods.transferOwnerShip().encodeABI();
     var permamentPOCStudyAbi = await this.pcoStudy.methods.transferOwnerShip().encodeABI();
@@ -131,7 +131,7 @@ export class POCStudy {
       signAndSendTransaction(
         this.connection,
         permamentClaimAbi,
-        CONFIG.Claim.address,
+        CONFIG.ClaimBranch.address,
         privateKey,
         nonce + 1 ,
         isSimulate
