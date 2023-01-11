@@ -353,7 +353,7 @@ export class DDR {
     let disclosureDDR = Array<any>();
     for (let i = 0; i < tokenIds.length; i++) {
       let hashvalue = await this.ddr.methods
-        .getDDRHash(parseInt(tokenIds[i]))
+        .getDDRHash(parseInt(tokenIds[i]), patientDID)
         .call();
       disclosureDDR.push(hashvalue);
     }

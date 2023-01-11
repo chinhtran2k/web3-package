@@ -51,11 +51,11 @@ export class DataIntegrity {
 
   public checkIntegritySingleDDR = async (
     patientDID: string,
-    ddrId: string,
+    tokenId: number,
     hashDDROffChain: string
   ) => {
     const hashDDROnChain = await this.ddr.methods
-      .getDDRHashOfPatientDIDByRawId(patientDID, ddrId)
+      .getDDRHash(tokenId, patientDID)
       .call();
     if (hashDDROnChain === hashDDROffChain) {
       return true;
@@ -70,7 +70,7 @@ export class DataIntegrity {
     claimKey: string,
     hashClaimOffChain: string
   ) => {
-    this.claimHolder = new this.connection.web3.eth.Contract(
+    const didContract = new this.connection.web3.eth.Contract(
       CONFIG.ClaimHolder.abi,
       accountDID
     );
@@ -80,7 +80,7 @@ export class DataIntegrity {
         { value: claimKey, type: "string" }
       )
     );
-    let hashClaimOnChain = await this.claimHolder.methods
+    let hashClaimOnChain = await didContract.methods
       .getHashClaim(claimId)
       .call();
     if (hashClaimOnChain == hashClaimOffChain) {
