@@ -23,6 +23,7 @@
     "dist",
     "src/**/*.spec.ts",
     "src/test.ts",
+    "src/test/**",
     "test.ts",
     "test.js",
     "signTransaction.ts",
