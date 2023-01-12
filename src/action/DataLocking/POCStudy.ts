@@ -112,12 +112,12 @@ export class POCStudy {
       );
     }
 
-    var permamentDDRAbi = await this.ddr.methods.transferOwnerShip().encodeABI();
-    var permamentClaimAbi = await this.claimBranch.methods.transferOwnerShip().encodeABI();
-    var permamentDDRBranhAbi = await this.ddrBranch.methods.transferOwnerShip().encodeABI();
-    var permamentDisclosureBranhAbi = await this.disclosureBranch.methods.transferOwnerShip().encodeABI();
-    var permamentPOCStudyAbi = await this.pcoStudy.methods.transferOwnerShip().encodeABI();
-    var permamentPatientAbi = await this.patient.methods.transferOwnerShip().encodeABI();
+    var permamentDDRAbi = await this.ddr.methods.removeOwnerShip().encodeABI();
+    var permamentClaimAbi = await this.claimBranch.methods.removeOwnerShip().encodeABI();
+    var permamentDDRBranhAbi = await this.ddrBranch.methods.removeOwnerShip().encodeABI();
+    var permamentDisclosureBranhAbi = await this.disclosureBranch.methods.removeOwnerShip().encodeABI();
+    var permamentPOCStudyAbi = await this.pcoStudy.methods.removeOwnerShip().encodeABI();
+    var permamentPatientAbi = await this.patient.methods.removeOwnerShip().encodeABI();
 
     const receipt = await Promise.all([
        signAndSendTransaction(
