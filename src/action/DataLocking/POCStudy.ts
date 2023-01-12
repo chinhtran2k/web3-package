@@ -99,7 +99,7 @@ export class POCStudy {
     return RootNodeIdPOCPatient;
   }
 
-  public async permamentLock(
+  public async permanentLock(
     privateKey: string,
     nonce?: number,
     isSimulate?: boolean
@@ -112,17 +112,17 @@ export class POCStudy {
       );
     }
 
-    var permamentDDRAbi = await this.ddr.methods.removeOwnerShip().encodeABI();
-    var permamentClaimAbi = await this.claimBranch.methods.removeOwnerShip().encodeABI();
-    var permamentDDRBranhAbi = await this.ddrBranch.methods.removeOwnerShip().encodeABI();
-    var permamentDisclosureBranhAbi = await this.disclosureBranch.methods.removeOwnerShip().encodeABI();
-    var permamentPOCStudyAbi = await this.pcoStudy.methods.removeOwnerShip().encodeABI();
-    var permamentPatientAbi = await this.patient.methods.removeOwnerShip().encodeABI();
+    var permanentDDRAbi = await this.ddr.methods.removeOwnerShip().encodeABI();
+    var permanentClaimAbi = await this.claimBranch.methods.removeOwnerShip().encodeABI();
+    var permanentDDRBranhAbi = await this.ddrBranch.methods.removeOwnerShip().encodeABI();
+    var permanentDisclosureBranhAbi = await this.disclosureBranch.methods.removeOwnerShip().encodeABI();
+    var permanentPOCStudyAbi = await this.pcoStudy.methods.removeOwnerShip().encodeABI();
+    var permanentPatientAbi = await this.patient.methods.removeOwnerShip().encodeABI();
 
     const receipt = await Promise.all([
        signAndSendTransaction(
         this.connection,
-        permamentDDRAbi,
+        permanentDDRAbi,
         CONFIG.DDR.address,
         privateKey,
         nonce ,
@@ -130,7 +130,7 @@ export class POCStudy {
       ),
       signAndSendTransaction(
         this.connection,
-        permamentClaimAbi,
+        permanentClaimAbi,
         CONFIG.ClaimBranch.address,
         privateKey,
         nonce + 1 ,
@@ -138,7 +138,7 @@ export class POCStudy {
       ),
       signAndSendTransaction(
         this.connection,
-        permamentDDRBranhAbi,
+        permanentDDRBranhAbi,
         CONFIG.DDRBranch.address,
         privateKey,
         nonce + 2 ,
@@ -146,7 +146,7 @@ export class POCStudy {
       ),
       signAndSendTransaction(
         this.connection,
-        permamentDisclosureBranhAbi,
+        permanentDisclosureBranhAbi,
         CONFIG.DisclosureBranch.address,
         privateKey,
         nonce + 3 ,
@@ -154,7 +154,7 @@ export class POCStudy {
       ),
       signAndSendTransaction(
         this.connection,
-        permamentPatientAbi,
+        permanentPatientAbi,
         CONFIG.Patient.address,
         privateKey,
         nonce + 4 ,
@@ -162,7 +162,7 @@ export class POCStudy {
       ),
       signAndSendTransaction(
         this.connection,
-        permamentPOCStudyAbi,
+        permanentPOCStudyAbi,
         CONFIG.POCStudy.address,
         privateKey,
         nonce + 5 ,
