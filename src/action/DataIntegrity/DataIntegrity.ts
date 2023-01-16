@@ -52,15 +52,42 @@ export class DataIntegrity {
   public checkIntegritySingleDDR = async (
     patientDID: string,
     tokenId: number,
-    hashDDROffChain: string
+    ddrId: string,
+    hashDDROffChain: string,
+    providerDID?: string
   ) => {
-    const hashDDROnChain = await this.ddr.methods
-      .getDDRHash(tokenId, patientDID)
+    const tokenIdOnChain = await this.ddr.methods
+      .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
-    if (hashDDROnChain === hashDDROffChain) {
-      return true;
+    if (providerDID) {
+      if (tokenIdOnChain == tokenId) {
+        const hashDDROnChain = await this.ddr.methods
+          .getDDRHash(tokenId, patientDID)
+          .call();
+        if (hashDDROnChain === hashDDROffChain) {
+          const isConsentedDDR = await this.ddr.methods
+            .isConsentedDDR(patientDID, ddrId)
+            .call();
+          return isConsentedDDR;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      if (tokenIdOnChain == tokenId) {
+        const hashDDROnChain = await this.ddr.methods
+          .getDDRHash(tokenId, patientDID)
+          .call();
+        if (hashDDROnChain === hashDDROffChain) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   };
 
@@ -68,6 +95,7 @@ export class DataIntegrity {
     accountDID: string,
     claimIssuer: string,
     claimKey: string,
+    claimValue: string,
     hashClaimOffChain: string
   ) => {
     const didContract = new this.connection.web3.eth.Contract(
@@ -80,11 +108,17 @@ export class DataIntegrity {
         { value: claimKey, type: "string" }
       )
     );
-    let hashClaimOnChain = await didContract.methods
-      .getHashClaim(claimId)
-      .call();
-    if (hashClaimOnChain == hashClaimOffChain) {
-      return true;
+    let tempData = this.connection.web3.utils.asciiToHex(claimValue);
+    const obj = await didContract.methods.getClaim(claimId).call();
+    if (tempData == obj.data) {
+      let hashClaimOnChain = await didContract.methods
+        .getHashClaim(claimId)
+        .call();
+      if (hashClaimOnChain == hashClaimOffChain) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
