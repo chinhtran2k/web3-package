@@ -328,6 +328,7 @@ export class DDR {
     let ddrTokenId = await this.ddr.methods
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
+    console.log(ddrTokenId)
     var isConsentedDDR = await this.ddr.methods
       .isConsentedDDR(providerDID, ddrTokenId)
       .call();

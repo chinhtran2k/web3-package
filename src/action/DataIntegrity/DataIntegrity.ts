@@ -56,17 +56,17 @@ export class DataIntegrity {
     hashDDROffChain: string,
     providerDID?: string
   ) => {
-    const tokenIdOnChain = await this.ddr.methods
+    let tokenIdOnChain = await this.ddr.methods
       .getTokenIdOfPatientDIDByRawId(patientDID, ddrId)
       .call();
     if (providerDID) {
-      if (tokenIdOnChain == tokenId) {
-        const hashDDROnChain = await this.ddr.methods
+      if (parseInt(tokenIdOnChain) == tokenId) {
+        let hashDDROnChain = await this.ddr.methods
           .getDDRHash(tokenId, patientDID)
           .call();
         if (hashDDROnChain === hashDDROffChain) {
-          const isConsentedDDR = await this.ddr.methods
-            .isConsentedDDR(patientDID, ddrId)
+          var isConsentedDDR = await this.ddr.methods
+            .isConsentedDDR(providerDID, tokenIdOnChain)
             .call();
           return isConsentedDDR;
         } else {
@@ -76,8 +76,8 @@ export class DataIntegrity {
         return false;
       }
     } else {
-      if (tokenIdOnChain == tokenId) {
-        const hashDDROnChain = await this.ddr.methods
+      if (parseInt(tokenIdOnChain) == tokenId) {
+        let hashDDROnChain = await this.ddr.methods
           .getDDRHash(tokenId, patientDID)
           .call();
         if (hashDDROnChain === hashDDROffChain) {
@@ -102,7 +102,7 @@ export class DataIntegrity {
       CONFIG.ClaimHolder.abi,
       accountDID
     );
-    const claimId = keccak256(
+    let claimId = keccak256(
       await this.connection.web3.utils.encodePacked(
         { value: claimIssuer, type: "address" },
         { value: claimKey, type: "string" }
@@ -129,7 +129,7 @@ export class DataIntegrity {
     accountDID: string,
     hashClaimBranchOffChain: string
   ) => {
-    const hashClaimBranchOnChain = await this.claimBranch.methods
+    let hashClaimBranchOnChain = await this.claimBranch.methods
       .getHashClaimOfToken(tokenId, accountDID)
       .call();
     if (hashClaimBranchOffChain === hashClaimBranchOnChain) {
@@ -145,7 +145,7 @@ export class DataIntegrity {
     hashDDRBranchOffChain: string
   ) => {
     // Check root
-    const hashDDRBranchOnChain = await this.ddrBranch.methods
+    let hashDDRBranchOnChain = await this.ddrBranch.methods
       .getHashDDRBranchOfTokenId(tokenId, patientDID)
       .call();
     return hashDDRBranchOnChain === hashDDRBranchOffChain;
@@ -157,7 +157,7 @@ export class DataIntegrity {
     hashDisclosureBranchOffChain: string
   ) => {
     // Check root
-    const hashDisclosureBranchOnChain = await this.disclosureBranch.methods
+    let hashDisclosureBranchOnChain = await this.disclosureBranch.methods
       .getRootHashDisclosureOfTokenId(tokenId, patientDID)
       .call();
     return hashDisclosureBranchOffChain === hashDisclosureBranchOnChain;
@@ -169,7 +169,7 @@ export class DataIntegrity {
     hashPatientOffChain: string
   ) => {
     // Check root
-    const hashPatientOnChain = await this.patient.methods
+    let hashPatientOnChain = await this.patient.methods
       .getRootHashValueOfTokenId(tokenId, patientDID)
       .call();
     return hashPatientOffChain === hashPatientOnChain;
@@ -177,7 +177,7 @@ export class DataIntegrity {
 
   public checkIntegrityStudy = async (hashPOCStudyOffChain: string) => {
     // Check root
-    const hashPOCStudyOnChain = await this.pcoStudy.methods
+    let hashPOCStudyOnChain = await this.pcoStudy.methods
       .getRootHashPOC()
       .call();
     return hashPOCStudyOnChain === hashPOCStudyOffChain;
