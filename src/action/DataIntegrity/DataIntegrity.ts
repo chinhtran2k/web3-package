@@ -66,7 +66,7 @@ export class DataIntegrity {
           .call();
         if (hashDDROnChain === hashDDROffChain) {
           var isConsentedDDR = await this.ddr.methods
-            .isConsentedDDR(providerDID, tokenIdOnChain)
+            .isConsentedDDR(providerDID.toLowerCase(), tokenIdOnChain)
             .call();
           return isConsentedDDR;
         } else {
