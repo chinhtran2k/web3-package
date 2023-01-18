@@ -58,7 +58,7 @@ export class Patient {
   }
 
   public async getHashClaim(patientDID: string) {
-    var hashClaim = await this.patient.methods.getHashClaim(patientDID).call();
+    var hashClaim = await this.patient.methods.getPatientRootHashValue(patientDID).call();
     return hashClaim;
   }
 
